@@ -29,6 +29,10 @@
         {{ range $pages }}
         {{ $cat := .Slug }}
         {{ $imgs := .Resources.ByType "image" }}
+        {{ $captions := dict }}
+        {{ with .Resources.Get "captions.json" }}
+            {{ $captions = .Content | transform.Unmarshal }}
+        {{ end }}
         <section class="gallery-section" id="cat-{{ $cat }}">
             <div class="gallery-section-header">
                 <h2 class="gallery-section-title">{{ .Title }}</h2>
@@ -42,12 +46,13 @@
             {{ else }}
             <div class="gallery-photos">
                 {{ range $imgs }}
-                <div class="polaroid" data-src="{{ .RelPermalink }}">
+                {{ $cap := index $captions .Name | default .Title }}
+                <div class="polaroid" data-src="{{ .RelPermalink }}" data-caption="{{ $cap }}">
                     <div class="polaroid-inner">
                         <div class="polaroid-img">
-                            <img src="{{ .RelPermalink }}" loading="lazy" alt="{{ .Name }}">
+                            <img src="{{ .RelPermalink }}" loading="lazy" alt="{{ $cap }}">
                         </div>
-                        <div class="polaroid-label">{{ .Name }}</div>
+                        <div class="polaroid-label">{{ $cap }}</div>
                     </div>
                 </div>
                 {{ end }}
@@ -133,10 +138,10 @@
         document.querySelectorAll(".polaroid").forEach(function(card) {
             card.addEventListener("click", function(e) {
                 var src = card.getAttribute("data-src");
-                var label = card.querySelector(".polaroid-label");
+                var caption = card.getAttribute("data-caption") || "";
                 if (!src) return;
                 zoomImg.src = src;
-                zoomCaption.textContent = label ? label.textContent : "";
+                zoomCaption.textContent = caption;
                 zoom.classList.add("active");
                 setTimeout(function(){ zoomImg.classList.add("show"); }, 50);
             });

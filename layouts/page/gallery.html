@@ -18,14 +18,19 @@
     <div class="gallery-photos" id="gallery-photos">
         {{ range $sections }}
         {{ $cat := .Slug }}
+        {{ $captions := dict }}
+        {{ with .Resources.Get "captions.json" }}
+            {{ $captions = .Content | transform.Unmarshal }}
+        {{ end }}
         {{ range .Resources.ByType "image" }}
         {{ $thumb := .Resize "400x" }}
-        <div class="polaroid" data-cat="{{ $cat }}" data-src="{{ .RelPermalink }}">
+        {{ $cap := index $captions .Name | default .Title }}
+        <div class="polaroid" data-cat="{{ $cat }}" data-src="{{ .RelPermalink }}" data-caption="{{ $cap }}">
             <div class="polaroid-inner">
                 <div class="polaroid-img">
                     <img src="{{ $thumb.RelPermalink }}" loading="lazy" alt="">
                 </div>
-                <div class="polaroid-label">{{ .Name }}</div>
+                <div class="polaroid-label">{{ $cap }}</div>
             </div>
         </div>
         {{ end }}
@@ -49,7 +54,10 @@
 <!-- 放大遮罩 -->
 <div class="gallery-zoom" id="gallery-zoom">
     <div class="gallery-zoom-bg"></div>
-    <img class="gallery-zoom-img" id="gallery-zoom-img" src="" alt="">
+    <div class="gallery-zoom-inner">
+        <img class="gallery-zoom-img" id="gallery-zoom-img" src="" alt="">
+        <div class="gallery-zoom-caption" id="gallery-zoom-caption"></div>
+    </div>
     <div class="gallery-zoom-close">&times;</div>
 </div>
 
@@ -89,15 +97,18 @@
     // 放大
     var zoom = document.getElementById("gallery-zoom");
     if (!zoom) return;
+    var zoomCaption = document.getElementById("gallery-zoom-caption");
     var zoomImg = document.getElementById("gallery-zoom-img");
     var zoomBg = zoom.querySelector(".gallery-zoom-bg");
     var zoomClose = zoom.querySelector(".gallery-zoom-close");
 
     document.querySelectorAll(".polaroid").forEach(function(card) {
         card.addEventListener("click", function(e) {
+            var caption = card.getAttribute("data-caption") || "";
             var src = card.getAttribute("data-src");
             if (!src) return;
             zoomImg.src = src;
+            zoomCaption.textContent = caption;
             zoom.classList.add("active");
             setTimeout(function(){ zoomImg.classList.add("show"); }, 50);
         });
