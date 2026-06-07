@@ -110,15 +110,15 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     [params.page.comment.giscus]
       enable = true
       repo = "varrdenn/myblog"
-      repoId = "R_kgDOSzPQXg"
+      repoId = "R_kgDOSzSANQ"          # 👈 已更新
       category = "Announcements"
-      categoryId = "DIC_kwDOSzPQXs4C-qmA"
+      categoryId = "DIC_kwDOSzSANc4C-qz6"  # 👈 已更新
       mapping = "pathname"
       strict = "0"
       reactionsEnabled = "1"
       emitMetadata = "0"
       inputPosition = "bottom"
-      lightTheme = "noborder_light"
+      lightTheme = "noborder_light"    # 💡 提示：你可以换成 "light_high_contrast" 如果更喜欢脚本里的高对比度主题
       darkTheme = "noborder_gray"
       lang = "zh-CN"
     [params.page.library]
