@@ -1,0 +1,134 @@
+{{ define "content" }}
+{{ $sections := .Sections }}
+{{ $audios := .Resources.Match "*.mp3" }}
+
+<div class="gallery-wall" id="gallery-wall">
+    {{ if eq (len $sections) 0 }}
+    <div class="gallery-empty">暂无相册分类，请在 content/gallery/ 下创建子文件夹</div>
+    {{ else }}
+    <!-- 分类标签栏 -->
+    <div class="gallery-tabs" id="gallery-tabs">
+        <button class="gallery-tab active" data-cat="all">全部</button>
+        {{ range $sections }}
+        <button class="gallery-tab" data-cat="{{ .Slug }}">{{ .Title }}</button>
+        {{ end }}
+    </div>
+
+    <!-- 照片瀑布流 -->
+    <div class="gallery-photos" id="gallery-photos">
+        {{ range $sections }}
+        {{ $cat := .Slug }}
+        {{ range .Resources.ByType "image" }}
+        {{ $thumb := .Resize "400x" }}
+        <div class="polaroid" data-cat="{{ $cat }}" data-src="{{ .RelPermalink }}">
+            <div class="polaroid-inner">
+                <div class="polaroid-img">
+                    <img src="{{ $thumb.RelPermalink }}" loading="lazy" alt="">
+                </div>
+                <div class="polaroid-label">{{ .Name }}</div>
+            </div>
+        </div>
+        {{ end }}
+        {{ end }}
+    </div>
+
+    {{ if gt (len $audios) 0 }}
+    {{ $firstAudio := index $audios 0 }}
+    <div class="music-float" id="music-float">
+        <button class="music-btn" id="music-toggle">&#9835;</button>
+        <div class="music-panel" id="music-panel">
+            <div class="music-header">背景音乐</div>
+            <div class="music-info">{{ $firstAudio.Name }}</div>
+            <audio id="gallery-audio" controls loop preload="none" src="{{ $firstAudio.RelPermalink }}"></audio>
+        </div>
+    </div>
+    {{ end }}
+    {{ end }}
+</div>
+
+<!-- 放大遮罩 -->
+<div class="gallery-zoom" id="gallery-zoom">
+    <div class="gallery-zoom-bg"></div>
+    <img class="gallery-zoom-img" id="gallery-zoom-img" src="" alt="">
+    <div class="gallery-zoom-close">&times;</div>
+</div>
+
+<script>
+(function(){
+    var angles = [-4, 5, -2, 3, -5, 4, -1, 6, -3, 4, -5, 3, -4, 2, -6, 5];
+    document.querySelectorAll(".polaroid-inner").forEach(function(el, i) {
+        el.style.setProperty("--r", angles[i % angles.length] + "deg");
+    });
+
+    // 分类切换
+    var tabs = document.querySelectorAll(".gallery-tab");
+    var photos = document.querySelectorAll(".polaroid");
+
+    if (tabs.length && photos.length) {
+        tabs.forEach(function(tab) {
+            tab.addEventListener("click", function() {
+                tabs.forEach(function(t){ t.classList.remove("active"); });
+                tab.classList.add("active");
+                var cat = tab.getAttribute("data-cat");
+                var firstVisible = null;
+                photos.forEach(function(p) {
+                    if (cat === "all" || p.getAttribute("data-cat") === cat) {
+                        p.style.display = "";
+                        if (!firstVisible) firstVisible = p;
+                    } else {
+                        p.style.display = "none";
+                    }
+                });
+                if (firstVisible) {
+                    setTimeout(function(){ firstVisible.scrollIntoView({ behavior:"smooth", block:"center" }); }, 100);
+                }
+            });
+        });
+    }
+
+    // 放大
+    var zoom = document.getElementById("gallery-zoom");
+    if (!zoom) return;
+    var zoomImg = document.getElementById("gallery-zoom-img");
+    var zoomBg = zoom.querySelector(".gallery-zoom-bg");
+    var zoomClose = zoom.querySelector(".gallery-zoom-close");
+
+    document.querySelectorAll(".polaroid").forEach(function(card) {
+        card.addEventListener("click", function(e) {
+            var src = card.getAttribute("data-src");
+            if (!src) return;
+            zoomImg.src = src;
+            zoom.classList.add("active");
+            setTimeout(function(){ zoomImg.classList.add("show"); }, 50);
+        });
+    });
+
+    function closeZoom() {
+        zoomImg.classList.remove("show");
+        setTimeout(function(){ zoom.classList.remove("active"); }, 300);
+    }
+    if (zoomBg) zoomBg.addEventListener("click", closeZoom);
+    if (zoomClose) zoomClose.addEventListener("click", closeZoom);
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") closeZoom();
+    });
+
+    // 音乐播放器
+    var toggle = document.getElementById("music-toggle");
+    var panel = document.getElementById("music-panel");
+    if (toggle && panel) {
+        var open = false;
+        toggle.addEventListener("click", function(e) {
+            e.stopPropagation();
+            open = !open;
+            panel.classList.toggle("show", open);
+            toggle.classList.toggle("active", open);
+        });
+        document.addEventListener("click", function() {
+            if (open) { panel.classList.remove("show"); open = false; toggle.classList.remove("active"); }
+        });
+        panel.addEventListener("click", function(e){ e.stopPropagation(); });
+    }
+})();
+</script>
+{{ end }}

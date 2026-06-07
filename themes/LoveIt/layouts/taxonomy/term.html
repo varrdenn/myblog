@@ -1,0 +1,13 @@
+{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+{{- define "content" -}}
+<div class="page archive">
+    <h1 class="single-title">{{ .Title }}</h1>
+    <div class="archive-list">
+        {{- range .Pages -}}
+        <article class="archive-item">
+            <a href="{{ .RelPermalink }}" class="archive-item-link">{{ .Title }}</a>
+        </article>
+        {{- end -}}
+    </div>
+</div>
+{{- end -}}

@@ -1,0 +1,135 @@
+baseURL = "http://localhost:1313/"
+title = "My Blog"
+theme = "LoveIt"
+themesDir = "themes"
+defaultContentLanguage = "zh-cn"
+locale = "zh-CN"
+hasCJKLanguage = true
+enableEmoji = true
+enableRobotsTXT = true
+enableGitInfo = false
+ignoreErrors = ["error-remote-getjson"]
+ignoreLogs = ["warning-goldmark-raw-html"]
+
+[markup.goldmark.renderer]
+  unsafe = true
+  hardWraps = true
+
+[pagination]
+  disableAliases = false
+  pagerSize = 10
+  path = "page"
+
+[menu]
+  [[menu.main]]
+    weight = 1
+    identifier = "posts"
+    pre = "<i class='fa fa-solid fa-book' aria-hidden='true'></i>"
+    post = ""
+    name = "文章"
+    url = "/posts/"
+    title = "书中自有黄金屋"
+  [[menu.main]]
+    weight = 2
+    identifier = "gallery"
+    pre = "<i class='fa fa-images' aria-hidden='true'></i>"
+    post = ""
+    name = "照片墙"
+    url = "/gallery/"
+    title = "定格美好瞬间"
+  [[menu.main]]
+    weight = 3
+    identifier = "tags"
+    pre = "<i class='fa fa-tag' aria-hidden='true'></i>"
+    post = ""
+    name = "标签"
+    url = "/tags/"
+    title = "定义文章，不定义世界"
+  [[menu.main]]
+    weight = 4
+    identifier = "categories"
+    pre = "<i class='fa fa-archive' aria-hidden='true'></i>"
+    post = ""
+    name = "分类"
+    url = "/categories/"
+    title = "分类是种视角"
+  [[menu.main]]
+    weight = 5
+    identifier = "about"
+    pre = "<i class='fa fa-address-card' aria-hidden='true'></i>"
+    post = ""
+    name = "关于"
+    url = "/about/"
+    title = "人穷其一生寻找自己"
+
+[params]
+  defaultTheme = "auto"
+  dateFormat = "2006-01-02"
+  title = "My Blog"
+  description = "欢迎来到我的博客"
+  images = [""]
+
+  [params.author]
+    name = "My Blog"
+    email = ""
+    link = ""
+
+  [params.header]
+    desktopMode = "fixed"
+    mobileMode = "auto"
+
+    [params.header.title]
+      name = "My Blog"
+      pre = "<i class='far fa-smile-wink' aria-hidden='true'></i>"
+      post = ""
+      logo = ""
+
+  [params.home]
+    rss = 10
+    [params.home.profile]
+      enable = true
+      gravatarEmail = ""
+      avatarURL = ""
+      title = ""
+      subtitle = "欢迎来到我的博客"
+      typeit = false
+      social = true
+      disclaimer = ""
+
+  [params.social]
+    GitHub = ""
+    Email = ""
+    RSS = true
+
+  [params.page]
+    [params.page.toc]
+      enable = true
+      keepStatic = false
+    [params.page.comment]
+      enable = true
+    [params.page.comment.giscus]
+      enable = true
+      repo = "varrdenn/myblog"
+      repoId = "R_kgDOSzPQXg"
+      category = "Announcements"
+      categoryId = "DIC_kwDOSzPQXs4C-qmA"
+      mapping = "pathname"
+      strict = "0"
+      reactionsEnabled = "1"
+      emitMetadata = "0"
+      inputPosition = "bottom"
+      lightTheme = "noborder_light"
+      darkTheme = "noborder_gray"
+      lang = "zh-CN"
+    [params.page.library]
+      [params.page.library.css]
+        animateCSS = true
+      [params.page.library.js]
+        customJS = "js/custom.js"
+    [params.page.share]
+      enable = false
+
+  [params.footer]
+    enable = true
+    since = "2025"
+    license = ""

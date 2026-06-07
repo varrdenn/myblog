@@ -1,0 +1,5 @@
+{{- if ge hugo.Version "0.145.0" -}}
+    
+{{- else -}}
+    {{- partial "internal/instagram.html" . -}}
+{{- end -}}

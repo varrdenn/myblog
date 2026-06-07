@@ -1,0 +1,174 @@
+{{ define "content" }}
+{{ $pages := .Pages }}
+{{ $audios := .Resources.Match "*.mp3" }}
+
+{{ if eq (len $pages) 0 }}
+<div class="gallery-empty">暂无相册分类，请在 content/gallery/ 下创建子文件夹</div>
+{{ else }}
+
+<div class="gallery-layout" id="gallery-layout">
+    <!-- 左侧固定侧边栏 -->
+    <aside class="gallery-sidebar" id="gallery-sidebar">
+        <div class="gallery-sidebar-header">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            相册分类
+        </div>
+        <nav class="gallery-sidebar-nav">
+            {{ range $pages }}
+            <a href="#cat-{{ .Slug }}" class="gallery-sidebar-item" data-target="cat-{{ .Slug }}">
+                <span class="gallery-sidebar-dot"></span>
+                <span class="gallery-sidebar-text">{{ .Title }}</span>
+                <span class="gallery-sidebar-count">{{ .Resources.ByType "image" | len }}</span>
+            </a>
+            {{ end }}
+        </nav>
+    </aside>
+
+    <!-- 右侧照片区 -->
+    <div class="gallery-main">
+        {{ range $pages }}
+        {{ $cat := .Slug }}
+        {{ $imgs := .Resources.ByType "image" }}
+        <section class="gallery-section" id="cat-{{ $cat }}">
+            <div class="gallery-section-header">
+                <h2 class="gallery-section-title">{{ .Title }}</h2>
+                {{ with .Description }}
+                <p class="gallery-section-desc">{{ . }}</p>
+                {{ end }}
+            </div>
+
+            {{ if eq (len $imgs) 0 }}
+            <div class="gallery-section-empty">暂无照片</div>
+            {{ else }}
+            <div class="gallery-photos">
+                {{ range $imgs }}
+                <div class="polaroid" data-src="{{ .RelPermalink }}">
+                    <div class="polaroid-inner">
+                        <div class="polaroid-img">
+                            <img src="{{ .RelPermalink }}" loading="lazy" alt="{{ .Name }}">
+                        </div>
+                        <div class="polaroid-label">{{ .Name }}</div>
+                    </div>
+                </div>
+                {{ end }}
+            </div>
+            {{ end }}
+        </section>
+        {{ end }}
+    </div>
+</div>
+
+{{ if gt (len $audios) 0 }}
+{{ $firstAudio := index $audios 0 }}
+<div class="music-float" id="music-float">
+    <button class="music-btn" id="music-toggle">&#9835;</button>
+    <div class="music-panel" id="music-panel">
+        <div class="music-header">背景音乐</div>
+        <div class="music-info">{{ $firstAudio.Name }}</div>
+        <audio id="gallery-audio" controls loop preload="none" src="{{ $firstAudio.RelPermalink }}"></audio>
+    </div>
+</div>
+{{ end }}
+{{ end }}
+
+<!-- 放大遮罩 -->
+<div class="gallery-zoom" id="gallery-zoom">
+    <div class="gallery-zoom-bg"></div>
+    <div class="gallery-zoom-inner">
+        <img class="gallery-zoom-img" id="gallery-zoom-img" src="" alt="">
+        <div class="gallery-zoom-caption" id="gallery-zoom-caption"></div>
+    </div>
+    <div class="gallery-zoom-close">&times;</div>
+</div>
+
+<script>
+(function(){
+    // 随机旋转
+    var angles = [-4, 5, -2, 3, -5, 4, -1, 6, -3, 4, -5, 3, -4, 2, -6, 5];
+    document.querySelectorAll(".polaroid-inner").forEach(function(el, i) {
+        el.style.setProperty("--r", angles[i % angles.length] + "deg");
+    });
+
+    // === ScrollSpy ===
+    var sidebarItems = document.querySelectorAll(".gallery-sidebar-item");
+    var sections = document.querySelectorAll(".gallery-section");
+    
+    if (sidebarItems.length && sections.length) {
+        var observer = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var id = entry.target.id;
+                    sidebarItems.forEach(function(item) {
+                        item.classList.remove("active");
+                        if (item.getAttribute("data-target") === id) {
+                            item.classList.add("active");
+                        }
+                    });
+                }
+            });
+        }, { rootMargin: "-20% 0px -70% 0px" });
+        
+        sections.forEach(function(section) { observer.observe(section); });
+    }
+
+    // === 平滑滚动 ===
+    sidebarItems.forEach(function(link) {
+        link.addEventListener("click", function(e) {
+            e.preventDefault();
+            var target = document.querySelector(this.getAttribute("href"));
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+    });
+
+    // === 放大 ===
+    var zoom = document.getElementById("gallery-zoom");
+    if (zoom) {
+        var zoomImg = document.getElementById("gallery-zoom-img");
+        var zoomCaption = document.getElementById("gallery-zoom-caption");
+        var zoomBg = zoom.querySelector(".gallery-zoom-bg");
+        var zoomClose = zoom.querySelector(".gallery-zoom-close");
+
+        document.querySelectorAll(".polaroid").forEach(function(card) {
+            card.addEventListener("click", function(e) {
+                var src = card.getAttribute("data-src");
+                var label = card.querySelector(".polaroid-label");
+                if (!src) return;
+                zoomImg.src = src;
+                zoomCaption.textContent = label ? label.textContent : "";
+                zoom.classList.add("active");
+                setTimeout(function(){ zoomImg.classList.add("show"); }, 50);
+            });
+        });
+
+        function closeZoom() {
+            zoomImg.classList.remove("show");
+            setTimeout(function(){ zoom.classList.remove("active"); }, 300);
+        }
+        if (zoomBg) zoomBg.addEventListener("click", closeZoom);
+        if (zoomClose) zoomClose.addEventListener("click", closeZoom);
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Escape") closeZoom();
+        });
+    }
+
+    // === 音乐 ===
+    var toggle = document.getElementById("music-toggle");
+    var panel = document.getElementById("music-panel");
+    if (toggle && panel) {
+        var open = false;
+        toggle.addEventListener("click", function(e) {
+            e.stopPropagation();
+            open = !open;
+            panel.classList.toggle("show", open);
+            toggle.classList.toggle("active", open);
+        });
+        document.addEventListener("click", function() {
+            if (open) { panel.classList.remove("show"); open = false; toggle.classList.remove("active"); }
+        });
+        panel.addEventListener("click", function(e){ e.stopPropagation(); });
+    }
+})();
+</script>
+{{ end }}
