@@ -1,5 +1,5 @@
 baseURL = "http://localhost:1313/"
-title = "My Blog"
+title = "Varden"
 theme = "LoveIt"
 themesDir = "themes"
 defaultContentLanguage = "zh-cn"
@@ -15,6 +15,12 @@ ignoreLogs = ["warning-goldmark-raw-html"]
   unsafe = true
   hardWraps = true
 
+[markup.goldmark.extensions.passthrough]
+  enable = true
+  [markup.goldmark.extensions.passthrough.delimiters]
+    block = [['$$', '$$']]
+    inline = [['$', '$']]
+
 [pagination]
   disableAliases = false
   pagerSize = 10
@@ -23,54 +29,62 @@ ignoreLogs = ["warning-goldmark-raw-html"]
 [menu]
   [[menu.main]]
     weight = 1
-    identifier = "posts"
-    pre = "<i class='fa fa-solid fa-book' aria-hidden='true'></i>"
+    identifier = "home"
+    pre = "<i class='fa fa-home' aria-hidden='true'></i>"
     post = ""
-    name = "文章"
-    url = "/posts/"
-    title = "书中自有黄金屋"
+    name = "HOME"
+    url = "/"
+    title = ""
   [[menu.main]]
     weight = 2
+    identifier = "posts"
+    pre = "<i class='fa fa-book' aria-hidden='true'></i>"
+    post = ""
+    name = "Posts"
+    url = "/posts/"
+    title = ""
+  [[menu.main]]
+    weight = 3
     identifier = "gallery"
     pre = "<i class='fa fa-images' aria-hidden='true'></i>"
     post = ""
-    name = "照片墙"
+    name = "Album"
     url = "/gallery/"
-    title = "定格美好瞬间"
-  [[menu.main]]
-    weight = 3
-    identifier = "tags"
-    pre = "<i class='fa fa-tag' aria-hidden='true'></i>"
-    post = ""
-    name = "标签"
-    url = "/tags/"
-    title = "定义文章，不定义世界"
+    title = ""
   [[menu.main]]
     weight = 4
-    identifier = "categories"
-    pre = "<i class='fa fa-archive' aria-hidden='true'></i>"
+    identifier = "favorites"
+    pre = "<i class='fa fa-star' aria-hidden='true'></i>"
     post = ""
-    name = "分类"
-    url = "/categories/"
-    title = "分类是种视角"
+    name = "Favorites"
+    url = "/favorites/"
+    title = ""
   [[menu.main]]
     weight = 5
+    identifier = "friends"
+    pre = "<i class='fa fa-user-friends' aria-hidden='true'></i>"
+    post = ""
+    name = "Friends"
+    url = "/friends/"
+    title = ""
+  [[menu.main]]
+    weight = 6
     identifier = "about"
     pre = "<i class='fa fa-address-card' aria-hidden='true'></i>"
     post = ""
-    name = "关于"
+    name = "About"
     url = "/about/"
-    title = "人穷其一生寻找自己"
+    title = ""
 
 [params]
   defaultTheme = "auto"
   dateFormat = "2006-01-02"
-  title = "My Blog"
+  title = "Varden"
   description = "欢迎来到我的博客"
   images = [""]
 
   [params.author]
-    name = "My Blog"
+    name = "Varden"
     email = ""
     link = ""
 
@@ -79,10 +93,10 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     mobileMode = "auto"
 
     [params.header.title]
-      name = "My Blog"
-      pre = "<i class='far fa-smile-wink' aria-hidden='true'></i>"
+      name = "Varden"
+      pre = ""
       post = ""
-      logo = ""
+      logo = "/favicon.ico"
 
   [params.home]
     rss = 10
@@ -110,17 +124,25 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     [params.page.comment.giscus]
       enable = true
       repo = "varrdenn/myblog"
-      repoId = "R_kgDOSzSANQ"          # 👈 已更新
+      repoId = "R_kgDOSzSANQ"
       category = "Announcements"
-      categoryId = "DIC_kwDOSzSANc4C-qz6"  # 👈 已更新
+      categoryId = "DIC_kwDOSzSANc4C-qz6"
       mapping = "pathname"
       strict = "0"
       reactionsEnabled = "1"
       emitMetadata = "0"
       inputPosition = "bottom"
-      lightTheme = "noborder_light"    # 💡 提示：你可以换成 "light_high_contrast" 如果更喜欢脚本里的高对比度主题
+      lightTheme = "noborder_light"
       darkTheme = "noborder_gray"
       lang = "zh-CN"
+
+    [params.page.math]
+      enable = true
+      inlineLeftDelimiter = "$"
+      inlineRightDelimiter = "$"
+      blockLeftDelimiter = "$$"
+      blockRightDelimiter = "$$"
+
     [params.page.library]
       [params.page.library.css]
         animateCSS = true
