@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Madimi+One&family=Ma+Shan+Zheng&display=swap');
 /* ========== 仓耳今楷03 字体 ========== */
 @font-face {
     font-family: "仓耳今楷03";
@@ -100,8 +101,9 @@ blockquote {
 }
 
 /* ========== 导航栏增强 ========== */
-.header-title { font-family: var(--sys-font-family); }
-.header-title a { font-size: 1.5rem; font-weight: 700; }
+.header-title { font-family: 'Ma Shan Zheng', 'Madimi One', var(--sys-font-family); }
+.header-title a { font-size: 35px; font-weight: 400; letter-spacing: 2px; }
+
 .menu-item { font-weight: 500; }
 
 .menu-item i {
@@ -280,29 +282,7 @@ blockquote {
 }
 .gallery-zoom-close:hover { transform: scale(1.2); }
 
-/* ========== 音乐 ========== */
-.music-float { position: fixed; bottom: 30px; right: 24px; z-index: 100; }
-.music-btn {
-    width: 48px; height: 48px; border-radius: 50%; border: none;
-    background: var(--accent); color: #fff; font-size: 22px; cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    display: flex; align-items: center; justify-content: center;
-    transition: transform 0.2s ease, background 0.3s ease;
-}
-.music-btn:hover { transform: scale(1.1); }
-.music-btn.active { background: #1a7a9c; }
-.music-panel {
-    position: absolute; bottom: 56px; right: 0;
-    background: var(--card-background-color, #fff);
-    border: 1px solid var(--global-border-color, #e0e0e0);
-    border-radius: 12px; padding: 16px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    min-width: 240px; display: none;
-}
-.music-panel.show { display: block; }
-.music-header { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
-.music-info { font-size: 0.72rem; color: var(--global-color-secondary, #999); margin-bottom: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.music-panel audio { width: 100%; height: 32px; }
+
 
 /* ========== Sakana Widget ========== */
 #sakana-widget-container {

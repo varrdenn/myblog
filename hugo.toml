@@ -93,10 +93,11 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     mobileMode = "auto"
 
     [params.header.title]
-      name = "Varden"
+      name = "VARDEN'S BLOG"
       pre = ""
       post = ""
-      logo = "/favicon.ico"
+      logo = ""
+      typeit = true
 
   [params.home]
     rss = 10

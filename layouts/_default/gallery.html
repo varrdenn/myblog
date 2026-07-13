@@ -63,17 +63,7 @@
     </div>
 </div>
 
-{{ if gt (len $audios) 0 }}
-{{ $firstAudio := index $audios 0 }}
-<div class="music-float" id="music-float">
-    <button class="music-btn" id="music-toggle">&#9835;</button>
-    <div class="music-panel" id="music-panel">
-        <div class="music-header">背景音乐</div>
-        <div class="music-info">{{ $firstAudio.Name }}</div>
-        <audio id="gallery-audio" controls loop preload="none" src="{{ $firstAudio.RelPermalink }}"></audio>
-    </div>
-</div>
-{{ end }}
+
 {{ end }}
 
 <!-- 放大遮罩 -->
