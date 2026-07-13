@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Madimi+One&family=Ma+Shan+Zheng&display=swap');
+﻿/* ========== 字体加载（国内CDN） ========== */
+/* 马善政 - 中文书法字体 */
+@import url('https://chinese-fonts-cdn.deno.dev/packages/mashanzheng/dist/MaShanZheng/result.css');
+/* Madimi One - 英文装饰字体（fonts.loli.net 国内镜像） */
+@import url('https://fonts.loli.net/css2?family=Madimi+One&display=swap');
 /* ========== 仓耳今楷03 字体 ========== */
 @font-face {
     font-family: "仓耳今楷03";
@@ -20,6 +24,19 @@
     --shadow-sm: 0 1px 4px rgba(0,0,0,0.04);
     --shadow-md: 0 2px 8px rgba(0,0,0,0.07), 0 4px 20px rgba(0,0,0,0.05);
     --shadow-lg: 0 4px 16px rgba(0,0,0,0.12), 0 8px 30px rgba(0,0,0,0.1);
+    /* --- FixIt 风格配色 --- */
+    --fixit-bg: #ffffff;
+    --fixit-bg-dark: #292a2e;
+    --fixit-text: #161209;
+    --fixit-text-dark: #b1b1ba;
+    --fixit-secondary: #8b949e;
+    --fixit-secondary-dark: #7d8792;
+    --fixit-border: #e3e3e3;
+    --fixit-border-dark: #454545;
+    --fixit-link-hover: #2983bb;
+    --fixit-link-hover-dark: #ffffff;
+    --fixit-card-bg: #f8f8f8;
+    --fixit-card-bg-dark: #252627;
 }
 
 body {
@@ -99,6 +116,40 @@ blockquote {
     margin: 1em 0;
     border-radius: 0 6px 6px 0;
 }
+
+
+/* ========== FixIt 暗色模式全局 ========== */
+[theme="dark"] body {
+    color: var(--fixit-text-dark);
+    background-color: var(--fixit-bg-dark);
+}
+[theme="dark"] a, [theme="dark"] a::before, [theme="dark"] a::after {
+    color: var(--fixit-text-dark);
+}
+[theme="dark"] a:hover {
+    color: var(--fixit-link-hover-dark);
+}
+[theme="dark"] .single .content a {
+    color: #55bde2;
+}
+[theme="dark"] .single .content a:hover {
+    color: #bdebfc;
+}
+[theme="dark"] .home[data-home="posts"] .single.summary {
+    background: var(--fixit-card-bg-dark);
+    border-color: var(--fixit-border-dark);
+    color: var(--fixit-text-dark);
+}
+[theme="dark"] .single.summary {
+    background: var(--fixit-card-bg-dark);
+}
+[theme="dark"] .single.summary:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 4px 20px rgba(0,0,0,0.3);
+}
+[theme="dark"] .archive .archive-item-link { color: var(--fixit-text-dark); }
+[theme="dark"] .archive .archive-item-link:hover { color: #fff; }
+[theme="dark"] .archive .archive-item-date { color: var(--fixit-secondary-dark); }
+[theme="dark"] .archive .group-title { color: var(--fixit-text-dark); }
 
 /* ========== 导航栏增强 ========== */
 .header-title { font-family: 'Ma Shan Zheng', 'Madimi One', var(--sys-font-family); }
@@ -333,3 +384,187 @@ blockquote {
 /* ========== 页脚统计 ========== */
 
 
+
+
+/* ========== 单篇文章三栏布局 ========== */
+.single-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* --- 左侧: 所有文章列表 --- */
+.post-sidebar {
+    width: 240px;
+    min-width: 240px;
+    flex-shrink: 0;
+    position: sticky;
+    top: calc(var(--header-height, 3.5rem) + 1rem);
+    max-height: calc(100vh - var(--header-height, 3.5rem) - 320px);
+    overflow-y: auto;
+    background: var(--fixit-card-bg, #f8f8f8);
+    border-radius: 10px;
+    padding: 14px 10px;
+    border: 1px solid var(--fixit-border, #e3e3e3);
+    font-size: 0.83rem;
+    line-height: 1.5;
+    scrollbar-width: thin;
+}
+
+.post-sidebar::-webkit-scrollbar { width: 4px; }
+.post-sidebar::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1; border-radius: 2px;
+}
+
+.post-sidebar-header {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--fixit-text, #161209);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--fixit-border, #e3e3e3);
+    letter-spacing: 0.02em;
+}
+
+.post-sidebar-nav .sidebar-year-group {
+    margin-bottom: 8px;
+}
+
+.post-sidebar-nav .sidebar-year-title {
+    font-weight: 700;
+    font-size: 0.78rem;
+    color: var(--accent, #2d96bd);
+    padding: 2px 0;
+    margin-bottom: 2px;
+    letter-spacing: 0.03em;
+}
+
+.post-sidebar-nav .sidebar-post-item {
+    display: flex;
+    align-items: baseline;
+    text-decoration: none;
+    color: var(--fixit-secondary, #8b949e);
+    padding: 3px 5px;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    gap: 5px;
+}
+
+.post-sidebar-nav .sidebar-post-item:hover {
+    background: var(--accent-light, rgba(45,150,189,0.08));
+    color: var(--fixit-text, #161209);
+}
+
+.post-sidebar-nav .sidebar-post-item.active {
+    background: var(--accent-light, rgba(45,150,189,0.08));
+    color: var(--accent, #2d96bd);
+    font-weight: 600;
+}
+
+.post-sidebar-nav .sidebar-post-date {
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    opacity: 0.7;
+    min-width: 30px;
+}
+
+.post-sidebar-nav .sidebar-post-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* --- 中间: 文章主体 --- */
+.single-layout .page.single {
+    flex: 1;
+    min-width: 0;
+    max-width: 780px;
+}
+
+/* --- 右侧: TOC --- */
+.single-layout #toc-auto {
+    position: sticky !important;
+    top: calc(var(--header-height, 3.5rem) + 1rem) !important;
+    left: auto !important;
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 200px !important;
+    flex-shrink: 0;
+    display: block !important;
+    visibility: visible !important;
+    padding: 0 0 0 12px !important;
+    border-left: 2px solid var(--fixit-border, #e3e3e3) !important;
+    max-height: calc(100vh - var(--header-height, 3.5rem) - 40px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.single-layout #toc-auto::-webkit-scrollbar { width: 3px; }
+.single-layout #toc-auto::-webkit-scrollbar-thumb {
+    background-color: #c1c1c1; border-radius: 2px;
+}
+
+.single-layout #toc-auto .toc-title {
+    margin: 0 0 0.5em 0 !important;
+    font-size: 0.85rem !important;
+}
+
+.single-layout #toc-auto .toc-content {
+    font-size: 0.78rem !important;
+}
+
+/* --- 暗色模式 --- */
+[theme="dark"] .post-sidebar {
+    background: var(--fixit-card-bg-dark, #252627);
+    border-color: var(--fixit-border-dark, #454545);
+}
+
+[theme="dark"] .post-sidebar-header {
+    color: var(--fixit-text-dark, #b1b1ba);
+    border-bottom-color: var(--fixit-border-dark, #454545);
+}
+
+[theme="dark"] .post-sidebar-nav .sidebar-post-item {
+    color: var(--fixit-secondary-dark, #7d8792);
+}
+
+[theme="dark"] .post-sidebar-nav .sidebar-post-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+}
+
+[theme="dark"] .post-sidebar-nav .sidebar-post-item.active {
+    background: rgba(45,150,189,0.12);
+    color: #55bde2;
+}
+
+[theme="dark"] .post-sidebar-nav .sidebar-year-title {
+    color: #55bde2;
+}
+
+[theme="dark"] .single-layout #toc-auto {
+    border-left-color: var(--fixit-border-dark, #454545) !important;
+}
+
+/* --- 响应式 --- */
+@media (max-width: 1200px) {
+    .post-sidebar { width: 210px; min-width: 210px; }
+    .single-layout #toc-auto { width: 170px !important; min-width: 170px !important; max-width: 170px !important; }
+}
+
+@media (max-width: 960px) {
+    .single-layout { flex-direction: column; }
+    .post-sidebar {
+        position: relative; top: 0;
+        width: 100%; min-width: 0;
+        max-height: 180px;
+        margin-bottom: 12px;
+    }
+    .single-layout #toc-auto {
+        display: none !important;
+    }
+    .post-sidebar-nav .sidebar-post-item { font-size: 0.78rem; }
+}
