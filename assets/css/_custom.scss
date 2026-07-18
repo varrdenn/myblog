@@ -1,8 +1,16 @@
-﻿/* ========== 字体加载（国内CDN） ========== */
-/* 马善政 - 中文书法字体 */
-@import url('https://chinese-fonts-cdn.deno.dev/packages/mashanzheng/dist/MaShanZheng/result.css');
-/* Madimi One - 英文装饰字体（fonts.loli.net 国内镜像） */
-@import url('https://fonts.loli.net/css2?family=Madimi+One&display=swap');
+﻿/* ========== 马善政字体（导航栏专用） ========== */
+@font-face {
+    font-family: "Ma Shan Zheng";
+    src: url("/fonts/MaShanZheng-Regular.ttf") format("truetype");
+    font-weight: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Ma Shan Zheng";
+    src: url("/fonts/MaShanZheng-Regular.ttf") format("truetype");
+    font-weight: bold;
+    font-display: swap;
+}
 /* ========== 仓耳今楷03 字体 ========== */
 @font-face {
     font-family: "仓耳今楷03";
@@ -152,10 +160,10 @@ blockquote {
 [theme="dark"] .archive .group-title { color: var(--fixit-text-dark); }
 
 /* ========== 导航栏增强 ========== */
-.header-title { font-family: 'Ma Shan Zheng', 'Madimi One', var(--sys-font-family); }
+.header-title { font-family: 'Ma Shan Zheng', cursive; }
 .header-title a { font-size: 35px; font-weight: 400; letter-spacing: 2px; }
 
-.menu-item { font-weight: 500; }
+.menu-item { font-family: var(--sys-font-family); font-size: 0.95rem; font-weight: 400; letter-spacing: normal; }
 
 .menu-item i {
     margin-right: 2px;
@@ -168,7 +176,7 @@ blockquote {
     filter: brightness(0) invert(1);
 }
 
-#header-desktop .header-wrapper .menu .menu-item { margin: 0 .3rem; }
+#header-desktop .header-wrapper .menu .menu-item { margin: 0 .65rem; }
 
 /* ========== 暗色模式 - 文章卡片 ========== */
 [theme="dark"] .home[data-home="posts"] .single.summary {
@@ -567,4 +575,17 @@ blockquote {
         display: none !important;
     }
     .post-sidebar-nav .sidebar-post-item { font-size: 0.78rem; }
+}
+
+
+
+/* ========== About 页面标题居中 ========== */
+.about-page .single-title {
+    text-align: center;
+}
+
+
+/* ========== Posts 页面标题居中 ========== */
+.page.archive .single-title {
+    text-align: center;
 }

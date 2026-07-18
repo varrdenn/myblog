@@ -53,19 +53,19 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     title = ""
   [[menu.main]]
     weight = 4
-    identifier = "favorites"
-    pre = "<i class='fa fa-star' aria-hidden='true'></i>"
+    identifier = "moments"
+    pre = "<i class='fa fa-clock' aria-hidden='true'></i>"
     post = ""
-    name = "Favorites"
-    url = "/favorites/"
+    name = "Moments"
+    url = "/moments/"
     title = ""
   [[menu.main]]
     weight = 5
-    identifier = "friends"
-    pre = "<i class='fa fa-user-friends' aria-hidden='true'></i>"
+    identifier = "links"
+    pre = "<i class='fa fa-link' aria-hidden='true'></i>"
     post = ""
-    name = "Friends"
-    url = "/friends/"
+    name = "Links"
+    url = "/links/"
     title = ""
   [[menu.main]]
     weight = 6
