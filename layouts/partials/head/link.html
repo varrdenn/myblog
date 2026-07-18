@@ -1,4 +1,4 @@
-﻿{{- $cdn := .Scratch.Get "cdn" | default dict -}}
+{{- $cdn := .Scratch.Get "cdn" | default dict -}}
 {{- $fingerprint := .Scratch.Get "fingerprint" -}}
 
 {{- if not .Site.Params.app.noFavicon -}}
@@ -24,10 +24,68 @@
 {{- $options = dict "Context" . "ToCSS" $toCSS | merge $options -}}
 {{- partial "plugin/style.html" $options -}}
 
+
+{{- /* Custom Fonts */ -}}
+<style>
+@font-face {
+    font-family: "Ma Shan Zheng";
+    src: url("{{ "fonts/MaShanZheng-Regular.ttf" | relURL }}") format("truetype");
+    font-weight: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Ma Shan Zheng";
+    src: url("{{ "fonts/MaShanZheng-Regular.ttf" | relURL }}") format("truetype");
+    font-weight: bold;
+    font-display: swap;
+}
+@font-face {
+    font-family: "仓耳今楷03";
+    src: url("{{ "fonts/仓耳今楷03-W05.ttf" | relURL }}") format("truetype");
+    font-weight: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "仓耳今楷03";
+    src: url("{{ "fonts/仓耳今楷03-W05.ttf" | relURL }}") format("truetype");
+    font-weight: bold;
+    font-display: swap;
+}
+</style>
+
 {{- /* Font Awesome */ -}}
 {{- $source := $cdn.fontawesomeFreeCSS | default "lib/fontawesome-free/css/all.min.css" -}}
 {{- $options := dict "Source" $source "Fingerprint" $fingerprint "Preload" true -}}
 {{- partial "plugin/style.html" $options -}}
+
+
+{{- /* Custom Fonts */ -}}
+<style>
+@font-face {
+    font-family: "Ma Shan Zheng";
+    src: url("{{ "fonts/MaShanZheng-Regular.ttf" | relURL }}") format("truetype");
+    font-weight: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Ma Shan Zheng";
+    src: url("{{ "fonts/MaShanZheng-Regular.ttf" | relURL }}") format("truetype");
+    font-weight: bold;
+    font-display: swap;
+}
+@font-face {
+    font-family: "仓耳今楷03";
+    src: url("{{ "fonts/仓耳今楷03-W05.ttf" | relURL }}") format("truetype");
+    font-weight: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "仓耳今楷03";
+    src: url("{{ "fonts/仓耳今楷03-W05.ttf" | relURL }}") format("truetype");
+    font-weight: bold;
+    font-display: swap;
+}
+</style>
 {{- if not $cdn.fontawesomeFreeCSS -}}
     {{- range resources.Match "lib/fontawesome-free/webfonts/*" -}}
         {{- .Publish -}}
@@ -38,3 +96,32 @@
 {{- $source := $cdn.animateCSS | default "lib/animate/animate.min.css" -}}
 {{- $options := dict "Source" $source "Fingerprint" $fingerprint "Preload" true -}}
 {{- partial "plugin/style.html" $options -}}
+
+
+{{- /* Custom Fonts */ -}}
+<style>
+@font-face {
+    font-family: "Ma Shan Zheng";
+    src: url("{{ "fonts/MaShanZheng-Regular.ttf" | relURL }}") format("truetype");
+    font-weight: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "Ma Shan Zheng";
+    src: url("{{ "fonts/MaShanZheng-Regular.ttf" | relURL }}") format("truetype");
+    font-weight: bold;
+    font-display: swap;
+}
+@font-face {
+    font-family: "仓耳今楷03";
+    src: url("{{ "fonts/仓耳今楷03-W05.ttf" | relURL }}") format("truetype");
+    font-weight: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "仓耳今楷03";
+    src: url("{{ "fonts/仓耳今楷03-W05.ttf" | relURL }}") format("truetype");
+    font-weight: bold;
+    font-display: swap;
+}
+</style>

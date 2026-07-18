@@ -1,29 +1,6 @@
 /* ========== 马善政字体（导航栏专用） ========== */
-@font-face {
-    font-family: "Ma Shan Zheng";
-    src: url("/fonts/MaShanZheng-Regular.ttf") format("truetype");
-    font-weight: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: "Ma Shan Zheng";
-    src: url("/fonts/MaShanZheng-Regular.ttf") format("truetype");
-    font-weight: bold;
-    font-display: swap;
-}
+
 /* ========== 仓耳今楷03 字体 ========== */
-@font-face {
-    font-family: "仓耳今楷03";
-    src: url("/fonts/仓耳今楷03-W05.ttf") format("truetype");
-    font-weight: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: "仓耳今楷03";
-    src: url("/fonts/仓耳今楷03-W05.ttf") format("truetype");
-    font-weight: bold;
-    font-display: swap;
-}
 
 :root {
     --sys-font-family: "仓耳今楷03", -apple-system, BlinkMacSystemFont, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
@@ -124,7 +101,6 @@ blockquote {
     margin: 1em 0;
     border-radius: 0 6px 6px 0;
 }
-
 
 /* ========== FixIt 暗色模式全局 ========== */
 [theme="dark"] body {
@@ -341,8 +317,6 @@ blockquote {
 }
 .gallery-zoom-close:hover { transform: scale(1.2); }
 
-
-
 /* ========== Sakana Widget ========== */
 #sakana-widget-container {
     position: fixed;
@@ -390,9 +364,6 @@ blockquote {
     .gallery-photos { column-count: 1; max-width: 340px; margin: 0 auto; }
 }
 /* ========== 页脚统计 ========== */
-
-
-
 
 /* ========== 单篇文章三栏布局 ========== */
 .single-layout {
@@ -577,19 +548,15 @@ blockquote {
     .post-sidebar-nav .sidebar-post-item { font-size: 0.78rem; }
 }
 
-
-
 /* ========== About 页面标题居中 ========== */
 .about-page .single-title {
     text-align: center;
 }
 
-
 /* ========== Posts 页面标题居中 ========== */
 .page.archive .single-title {
     text-align: center;
 }
-
 
 /* ========== Moments 卡片布局 ========== */
 .moments-intro {

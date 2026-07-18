@@ -4,7 +4,7 @@
     {{- $params := .Scratch.Get "params" -}}
     <article class="page single moment-detail">
         {{- /* Back link */ -}}
-        <a href="/moments/" class="moment-back">
+        <a href="{{ .Parent.RelPermalink }}" class="moment-back">
             <i class="fas fa-arrow-left" aria-hidden="true"></i> 返回 Moments
         </a>
 
