@@ -8,6 +8,7 @@ hasCJKLanguage = true
 enableEmoji = true
 enableRobotsTXT = true
 enableGitInfo = false
+buildFuture = true
 ignoreErrors = ["error-remote-getjson"]
 ignoreLogs = ["warning-goldmark-raw-html"]
 
@@ -43,16 +44,9 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     name = "Posts"
     url = "/posts/"
     title = ""
+
   [[menu.main]]
     weight = 3
-    identifier = "gallery"
-    pre = "<i class='fa fa-images' aria-hidden='true'></i>"
-    post = ""
-    name = "Album"
-    url = "/gallery/"
-    title = ""
-  [[menu.main]]
-    weight = 4
     identifier = "moments"
     pre = "<i class='fa fa-clock' aria-hidden='true'></i>"
     post = ""
@@ -60,7 +54,7 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     url = "/moments/"
     title = ""
   [[menu.main]]
-    weight = 5
+    weight = 4
     identifier = "links"
     pre = "<i class='fa fa-link' aria-hidden='true'></i>"
     post = ""
@@ -68,7 +62,7 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     url = "/links/"
     title = ""
   [[menu.main]]
-    weight = 6
+    weight = 5
     identifier = "about"
     pre = "<i class='fa fa-address-card' aria-hidden='true'></i>"
     post = ""
@@ -145,8 +139,6 @@ ignoreLogs = ["warning-goldmark-raw-html"]
       blockRightDelimiter = "$$"
 
     [params.page.library]
-      [params.page.library.css]
-        animateCSS = true
       [params.page.library.js]
         customJS = "js/custom.js"
     [params.page.share]

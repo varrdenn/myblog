@@ -9,6 +9,13 @@
             {{- .Params.Title | default (T .Section) | default .Section | dict "Some" | T "allSome" -}}
         </h2>
 
+        {{- /* Content from _index.md */ -}}
+        {{- with .Content -}}
+            <div class="content">
+                {{- . | safeHTML -}}
+            </div>
+        {{- end -}}
+
         {{- /* Paginate */ -}}
         {{- if .Pages -}}
             {{- $pages := .Pages.GroupByDate "2006" -}}

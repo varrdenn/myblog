@@ -1,0 +1,47 @@
+﻿{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $allPages := .Pages -}}
+    <div class="page moments-list">
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Title -}}
+        </h1>
+
+        {{- with .Content -}}
+            <div class="moments-intro">{{- . -}}</div>
+        {{- end -}}
+
+        <div class="moments-grid">
+            {{- range $allPages.ByDate.Reverse -}}
+                <a href="{{ .RelPermalink }}" class="moment-card">
+                    {{- $featured := "" -}}
+                    {{- $imgs := sort (.Resources.ByType "image") "Name" -}}
+                    {{- if gt (len $imgs) 0 -}}
+                        {{- $firstImg := index $imgs 0 -}}
+                        {{- $featured = ($firstImg.Resize "400x").RelPermalink -}}
+                    {{- end -}}
+                    {{- if $featured -}}
+                        <div class="moment-card-img">
+                            <img src="{{ $featured }}" loading="lazy" alt="{{ .Title }}">
+                        </div>
+                    {{- else -}}
+                        <div class="moment-card-placeholder">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M12 6v6l4 2"/>
+                            </svg>
+                        </div>
+                    {{- end -}}
+                    <div class="moment-card-body">
+                        <h3 class="moment-card-title">{{ .Title }}</h3>
+                        <span class="moment-card-date">{{ .Date.Format "2006-01-02" }}</span>
+                    </div>
+                </a>
+            {{- end -}}
+        </div>
+
+        <div class="moments-footer">
+            <p>更多瞬间，持续记录中…</p>
+        </div>
+    </div>
+{{- end -}}

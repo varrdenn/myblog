@@ -1,0 +1,121 @@
+{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $params := .Scratch.Get "params" -}}
+    <article class="page single moment-detail">
+        {{- /* Back link */ -}}
+        <a href="/moments/" class="moment-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> 返回 Moments
+        </a>
+
+        {{- /* Title */ -}}
+        <h1 class="single-title animate__animated animate__flipInX">{{ .Title }}</h1>
+
+        {{- /* Date */ -}}
+        <div class="post-meta">
+            <div class="post-meta-line">
+                <i class="far fa-calendar-alt" aria-hidden="true"></i>&nbsp;<time>{{ .Date.Format "2006-01-02" }}</time>
+            </div>
+        </div>
+
+        {{- /* Images gallery - 九宫格 */ -}}
+        {{- $imgs := sort (.Resources.ByType "image") "Name" -}}
+        {{- if gt (len $imgs) 0 -}}
+            <div class="moment-grid-gallery">
+                {{- range $imgs -}}
+                    <div class="moment-grid-item">
+                        <img src="{{ .RelPermalink }}" loading="lazy" alt="{{ .Title }}" data-full="{{ .RelPermalink }}">
+                    </div>
+                {{- end -}}
+            </div>
+        {{- end -}}
+
+        {{- /* Content text below images */ -}}
+        <div class="content" id="content">
+            {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
+        </div>
+
+        {{- /* Footer nav */ -}}
+        <div class="moment-nav">
+            {{- with .PrevInSection -}}
+                <a href="{{ .RelPermalink }}" class="moment-nav-prev">
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i> {{ .Title }}
+                </a>
+            {{- end -}}
+            {{- with .NextInSection -}}
+                <a href="{{ .RelPermalink }}" class="moment-nav-next">
+                    {{ .Title }} <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                </a>
+            {{- end -}}
+        </div>
+    </article>
+
+    {{- /* Lightbox overlay */ -}}
+    {{- if gt (len $imgs) 0 -}}
+    <div class="moment-lightbox" id="moment-lightbox">
+        <div class="moment-lightbox-bg"></div>
+        <button class="moment-lightbox-prev" id="moment-lightbox-prev" title="上一张">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="moment-lightbox-inner">
+            <img id="moment-lightbox-img" src="" alt="">
+        </div>
+        <button class="moment-lightbox-next" id="moment-lightbox-next" title="下一张">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <div class="moment-lightbox-close">&times;</div>
+        <div class="moment-lightbox-counter" id="moment-lightbox-counter"></div>
+    </div>
+    <script>
+    (function(){
+        var lb = document.getElementById('moment-lightbox');
+        if (!lb) return;
+        var lbImg = document.getElementById('moment-lightbox-img');
+        var lbBg = lb.querySelector('.moment-lightbox-bg');
+        var lbClose = lb.querySelector('.moment-lightbox-close');
+        var lbPrev = document.getElementById('moment-lightbox-prev');
+        var lbNext = document.getElementById('moment-lightbox-next');
+        var lbCounter = document.getElementById('moment-lightbox-counter');
+        var imgs = Array.from(document.querySelectorAll('.moment-grid-item img'));
+        var currentIndex = -1;
+
+        function show(index) {
+            if (index < 0 || index >= imgs.length) return;
+            currentIndex = index;
+            lbImg.src = imgs[index].getAttribute('data-full') || imgs[index].src;
+            lb.classList.add('active');
+            if (lbCounter) {
+                lbCounter.textContent = (index + 1) + ' / ' + imgs.length;
+            }
+            if (lbPrev) lbPrev.style.display = imgs.length > 1 ? '' : 'none';
+            if (lbNext) lbNext.style.display = imgs.length > 1 ? '' : 'none';
+        }
+
+        imgs.forEach(function(img, i) {
+            img.addEventListener('click', function() { show(i); });
+        });
+
+        function prev() {
+            if (currentIndex > 0) show(currentIndex - 1);
+            else show(imgs.length - 1);
+        }
+        function next() {
+            if (currentIndex < imgs.length - 1) show(currentIndex + 1);
+            else show(0);
+        }
+        function close() { lb.classList.remove('active'); }
+
+        if (lbPrev) lbPrev.addEventListener('click', function(e) { e.stopPropagation(); prev(); });
+        if (lbNext) lbNext.addEventListener('click', function(e) { e.stopPropagation(); next(); });
+        lbBg.addEventListener('click', close);
+        lbClose.addEventListener('click', close);
+        document.addEventListener('keydown', function(e) {
+            if (!lb.classList.contains('active')) return;
+            if (e.key === 'Escape') close();
+            if (e.key === 'ArrowLeft') prev();
+            if (e.key === 'ArrowRight') next();
+        });
+    })();
+    </script>
+    {{- end -}}
+{{- end -}}
