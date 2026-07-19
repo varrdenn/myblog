@@ -58,7 +58,7 @@
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <div class="moment-lightbox-inner">
-            <img id="moment-lightbox-img" src="" alt="">
+            <img id="moment-lightbox-img" src="" alt=""><div class="moment-lightbox-filename" id="moment-lightbox-filename"></div>
         </div>
         <button class="moment-lightbox-next" id="moment-lightbox-next" title="下一张">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
@@ -82,7 +82,7 @@
         function show(index) {
             if (index < 0 || index >= imgs.length) return;
             currentIndex = index;
-            lbImg.src = imgs[index].getAttribute('data-full') || imgs[index].src;
+            lbImg.src = imgs[index].getAttribute('data-full') || imgs[index].src;var f=imgs[index].getAttribute('data-full')||imgs[index].src;f=decodeURIComponent(f.split('/').pop());document.getElementById('moment-lightbox-filename').textContent=f;
             lb.classList.add('active');
             if (lbCounter) {
                 lbCounter.textContent = (index + 1) + ' / ' + imgs.length;

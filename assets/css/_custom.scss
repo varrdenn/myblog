@@ -739,9 +739,18 @@ blockquote {
 
 .moment-lightbox-inner img {
     max-width: 85vw;
-    max-height: 85vh;
+    max-height: 80vh;
     object-fit: contain;
     border-radius: 4px;
+}
+
+.moment-lightbox-filename {
+    text-align: center;
+    color: rgba(255,255,255,0.75);
+    font-size: 0.85rem;
+    margin-top: 0.6rem;
+    word-break: break-all;
+    max-width: 85vw;
 }
 
 .moment-lightbox-prev,
@@ -819,7 +828,10 @@ blockquote {
     }
     .moment-lightbox-inner img {
         max-width: 92vw;
-        max-height: 80vh;
+        max-height: 75vh;
+    }
+    .moment-lightbox-filename {
+        max-width: 92vw;
     }
 }
 
