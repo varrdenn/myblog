@@ -320,7 +320,7 @@ blockquote {
 /* ========== Sakana Widget ========== */
 #sakana-widget-container {
     position: fixed;
-    bottom: 10px;
+    bottom: 90px;
     left: 10px;
     z-index: 99;
     width: 268px;
@@ -1006,5 +1006,7 @@ blockquote {
 .fixed-button {
     right: auto !important;
     left: 1.5rem !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
 }
 
