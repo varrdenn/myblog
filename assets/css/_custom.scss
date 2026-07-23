@@ -172,7 +172,7 @@ blockquote {
 #reading-progress {
     position: fixed;
     top: 0; left: 0;
-    height: 3px;
+    height: 4px;
     background: linear-gradient(90deg, var(--accent), #55bde2);
     z-index: 9998;
     transition: width 0.1s linear;
@@ -910,3 +910,101 @@ blockquote {
         max-width: 420px;
     }
 }
+
+/* ========== APlayer 全局音乐（右下角） ========== */
+.aplayer {
+    font-family: var(--sys-font-family) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s;
+}
+
+.aplayer button:hover path,
+.aplayer .aplayer-icon:hover path {
+    fill: var(--accent, #2d96bd) !important;
+}
+
+.aplayer .aplayer-miniswitcher {
+    background: #e85d75 !important;
+}
+
+.aplayer.aplayer-fixed {
+    margin-left: auto !important;
+    margin-right: 16px !important;
+    margin-bottom: 16px !important;
+    z-index: 9998;
+}
+
+.aplayer.aplayer-fixed .aplayer-body {
+    margin-left: auto !important;
+    margin-right: 16px !important;
+    margin-bottom: 16px !important;
+    background: var(--fixit-card-bg, #f8f8f8) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-info {
+    border-top: 1px solid var(--fixit-border, #e3e3e3) !important;
+}
+
+.aplayer.aplayer-fixed .aplayer-list {
+    border: 1px solid var(--fixit-border, #e3e3e3) !important;
+}
+
+.aplayer-title,
+.aplayer-list-title,
+.aplayer-music {
+    color: var(--accent, #2d96bd) !important;
+}
+
+.aplayer-list ol li {
+    border-top: 1px solid var(--fixit-border, #e3e3e3) !important;
+}
+.aplayer-list ol li:hover {
+    background: var(--accent-light, rgba(45,150,189,0.08)) !important;
+}
+.aplayer-list ol li.aplayer-list-light {
+    background: var(--accent-light, rgba(45,150,189,0.08)) !important;
+}
+
+.aplayer-author,
+.aplayer-lrc p,
+.aplayer-list-author {
+    color: var(--fixit-secondary, #8b949e) !important;
+}
+
+/* 暗色 */
+[theme="dark"] .aplayer.aplayer-fixed .aplayer-body {
+    margin-left: auto !important;
+    margin-right: 16px !important;
+    margin-bottom: 16px !important;
+    background: var(--fixit-card-bg-dark, #252627) !important;
+}
+[theme="dark"] .aplayer.aplayer-fixed .aplayer-info {
+    border-top-color: var(--fixit-border-dark, #454545) !important;
+}
+[theme="dark"] .aplayer.aplayer-fixed .aplayer-list {
+    border-color: var(--fixit-border-dark, #454545) !important;
+}
+[theme="dark"] .aplayer-list ol li {
+    border-top-color: var(--fixit-border-dark, #454545) !important;
+}
+[theme="dark"] .aplayer-title,
+[theme="dark"] .aplayer-music {
+    color: #55bde2 !important;
+}
+[theme="dark"] .aplayer-author {
+    color: var(--fixit-secondary-dark, #7d8792) !important;
+}
+
+/* 移动端 */
+@media (max-width: 640px) {
+    .aplayer.aplayer-fixed {
+        right: 8px !important;
+    }
+}
+
+
+.fixed-button {
+    right: auto !important;
+    left: 1.5rem !important;
+}
+

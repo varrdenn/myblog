@@ -1,0 +1,35 @@
+﻿{{- /* Global Music Player */ -}}
+
+<div id="aplayer"></div>
+<script>
+(function(){var el=document.getElementById("aplayer");if(el&&el.parentNode){el.parentNode.removeChild(el);document.body.appendChild(el);}})();
+</script>
+
+<script src="/lib/aplayer/APlayer.min.js"></script>
+<script>
+var ap = new APlayer({
+    container: document.getElementById('aplayer'),
+    fixed: true,
+    mini: true,
+    autoplay: false,
+    theme: '#2d96bd',
+    loop: 'all',
+    order: 'list',
+    preload: 'auto',
+    volume: 0.7,
+    mutex: true,
+    listFolded: false,
+    lrcType: 0,
+    audio: [
+        {"name":"告诉我 (Live)","artist":"陈绮贞","url":"https://music.163.com/song/media/outer/url?id=37240058.mp3","cover":"https://p1.music.126.net/haTIbpkwpBOz-pW2WGt37w==/3309530001047798.jpg?param=90y90"},
+        {"name":"太聪明 (Live)","artist":"陈绮贞","url":"https://music.163.com/song/media/outer/url?id=37239070.mp3","cover":"https://p1.music.126.net/haTIbpkwpBOz-pW2WGt37w==/3309530001047798.jpg?param=90y90"},
+        {"name":"旅行的意义(Live)","artist":"陈绮贞","url":"https://music.163.com/song/media/outer/url?id=37240060.mp3","cover":"https://p2.music.126.net/haTIbpkwpBOz-pW2WGt37w==/3309530001047798.jpg?param=90y90"},
+        {"name":"天后","artist":"卢卢快闭嘴","url":"https://music.163.com/song/media/outer/url?id=2101067848.mp3","cover":"https://p1.music.126.net/_TV32cQnDUP2SAtCPUEtoA==/109951169066704919.jpg?param=90y90"},
+        {"name":"可你听见了","artist":"DOUDOU","url":"https://music.163.com/song/media/outer/url?id=2605274338.mp3","cover":"https://p1.music.126.net/7DO7fn5_G7CtSPrTtenvnw==/109951169759746430.jpg?param=90y90"},
+        {"name":"ティガの里、遥か (M-20) ","artist":"矢野立美","url":"https://music.163.com/song/media/outer/url?id=4968396.mp3","cover":"https://p1.music.126.net/YPWNxSflcoUp1T14SAfMFg==/109951169358657780.jpg?param=90y90"}
+    ]
+});
+</script>
+
+
+

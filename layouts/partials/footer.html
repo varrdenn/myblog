@@ -1,4 +1,4 @@
-{{- if ne .Site.Params.footer.enable false -}}
+﻿{{- if ne .Site.Params.footer.enable false -}}
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-line">
@@ -9,7 +9,16 @@
                 <div class="footer-line">
                     {{- safeHTML . -}}
                 </div>
-            {{- end -}}
+            
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
+{{- end -}}
 
             {{- if ne .Site.Params.footer.hugo false -}}
                 <div class="footer-line">
@@ -17,7 +26,16 @@
                     {{- $theme := .Scratch.Get "version" | printf `<a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt %v"><i class="far fa-kiss-wink-heart" aria-hidden="true"></i> LoveIt</a>` -}}
                     {{- dict "Hugo" $hugo "Theme" $theme | T "poweredBySome" | safeHTML }}
                 </div>
-            {{- end -}}
+            
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
+{{- end -}}
 
             <div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork">
                 {{- if ne .Site.Params.footer.copyright false -}}
@@ -28,28 +46,82 @@
                         </span>
                     {{- else -}}
                         <span itemprop="copyrightYear">{{ now.Year }}</span>
-                    {{- end -}}
-                {{- end -}}
+                    
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
+{{- end -}}
+                
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
+{{- end -}}
 
                 {{- if ne .Site.Params.footer.author false -}}
                     <span class="author" itemprop="copyrightHolder">&nbsp;<a href="{{ $.Site.Params.Author.link | default .Site.Home.RelPermalink }}" target="_blank">{{ .Site.Params.Author.name }}</a></span>
-                {{- end -}}
+                
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
+{{- end -}}
 
                 {{- with .Site.Params.footer.license -}}
                     &nbsp;|&nbsp;<span class="license">{{ . | safeHTML }}</span>
-                {{- end -}}
+                
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
+{{- end -}}
 
                 {{- with .Site.Params.footer.icp -}}
                     <span class="icp-splitter">&nbsp;|&nbsp;</span><br class="icp-br"/>
                     <span class="icp">{{ . | safeHTML }}</span>
-                {{- end -}}
+                
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
+{{- end -}}
             </div>
 
             {{- $postCount := len (where .Site.RegularPages "Section" "posts") -}}
             {{- $wordCount := 0 -}}
             {{- range .Site.RegularPages -}}
                 {{- $wordCount = add $wordCount .WordCount -}}
-            {{- end -}}
+            
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
+{{- end -}}
             <div class="footer-line">
                 <i class="fas fa-book fa-fw" aria-hidden="true"></i>&nbsp;共 {{ $postCount }} 篇文章，{{ $wordCount }} 字
             </div>
@@ -73,6 +145,8 @@
     
     
     
+        {{ partial "music.html" . }}
+
     <div id="sakana-widget-container" aria-hidden="true">
   <div id="sakana-widget"></div>
 </div>
@@ -115,4 +189,16 @@
 <script async onload="window.initSakanaWidget && window.initSakanaWidget()"
   src="https://cdn.jsdelivr.net/npm/sakana-widget@3.0.0/lib/index.umd.min.js">
 </script>
+
+<script>
+(function(){
+    var fb = document.getElementById("fixed-buttons");
+    var fbh = document.getElementById("fixed-buttons-hidden");
+    if (fb) { fb.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:4.5rem;z-index:9999"; }
+    if (fbh) { fbh.style.cssText = "display:block !important;visibility:visible !important;opacity:1 !important;position:fixed;left:1.5rem;bottom:1.5rem;z-index:9999"; }
+})();
+</script>
 {{- end -}}
+
+
+
