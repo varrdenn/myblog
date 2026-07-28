@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var el = document.getElementById('run-time');
     if (!el) return;
 
-    var startTime = new Date('01/23/2025 10:09:56');
+    var startTime = new Date('01/01/2025 19:37:10');
 
     function pad(n) { return n < 10 ? '0' + n : n; }
 
