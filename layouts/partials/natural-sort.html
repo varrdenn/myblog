@@ -1,0 +1,34 @@
+{{- /* natural-sort.html
+     Natural (human) sort of a resource slice by resource name.
+     Every run of digits is zero-padded to a fixed width (10), so that
+     "2026-08-01 世界之窗留影2.jpg" sorts before "...留影10.jpg".
+     Returns a slice of dicts: { resource = original resource, sortKey = padded key }.
+     Usage: {{ $imgs := partial "natural-sort.html" (.Resources.ByType "image") }}
+*/ -}}
+{{- $items := slice -}}
+{{- range . -}}
+    {{- $key := "" -}}
+    {{- $num := "" -}}
+    {{- range $ch := split .Name "" -}}
+        {{- if in "0123456789" $ch -}}
+            {{- $num = printf "%s%s" $num $ch -}}
+        {{- else -}}
+            {{- if ne $num "" -}}
+                {{- if lt (len $num) 10 -}}
+                    {{- $num = printf "%s%s" (strings.Repeat (sub 10 (len $num)) "0") $num -}}
+                {{- end -}}
+                {{- $key = printf "%s%s" $key $num -}}
+                {{- $num = "" -}}
+            {{- end -}}
+            {{- $key = printf "%s%s" $key $ch -}}
+        {{- end -}}
+    {{- end -}}
+    {{- if ne $num "" -}}
+        {{- if lt (len $num) 10 -}}
+            {{- $num = printf "%s%s" (strings.Repeat (sub 10 (len $num)) "0") $num -}}
+        {{- end -}}
+        {{- $key = printf "%s%s" $key $num -}}
+    {{- end -}}
+    {{- $items = $items | append (dict "resource" . "sortKey" $key) -}}
+{{- end -}}
+{{- return sort $items "sortKey" -}}

@@ -15,10 +15,10 @@
             {{- range $allPages.ByDate.Reverse -}}
                 <a href="{{ .RelPermalink }}" class="moment-card">
                     {{- $featured := "" -}}
-                    {{- $imgs := sort (.Resources.ByType "image") "Name" -}}
+                    {{- $imgs := partial "natural-sort.html" (.Resources.ByType "image") -}}
                     {{- if gt (len $imgs) 0 -}}
                         {{- $firstImg := index $imgs 0 -}}
-                        {{- $featured = ($firstImg.Resize "400x").RelPermalink -}}
+                        {{- $featured = ($firstImg.resource.Resize "400x").RelPermalink -}}
                     {{- end -}}
                     {{- if $featured -}}
                         <div class="moment-card-img">

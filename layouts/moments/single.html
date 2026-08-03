@@ -19,12 +19,12 @@
         </div>
 
         {{- /* Images gallery - 九宫格 */ -}}
-        {{- $imgs := sort (.Resources.ByType "image") "Name" -}}
+        {{- $imgs := partial "natural-sort.html" (.Resources.ByType "image") -}}
         {{- if gt (len $imgs) 0 -}}
             <div class="moment-grid-gallery">
                 {{- range $imgs -}}
                     <div class="moment-grid-item">
-                        <img src="{{ .RelPermalink }}" loading="lazy" alt="{{ .Title }}" data-full="{{ .RelPermalink }}">
+                        <img src="{{ .resource.RelPermalink }}" loading="lazy" alt="{{ .resource.Title }}" data-full="{{ .resource.RelPermalink }}">
                     </div>
                 {{- end -}}
             </div>
