@@ -1,7 +1,7 @@
 ﻿---
 title: "少年时光"
 date: 2004-05-08
-lastmod: 2021-06-03
+lastmod: 2021-09-26
 draft: false
 ---
 
