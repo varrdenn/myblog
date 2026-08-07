@@ -1,37 +1,150 @@
-﻿{{- /* Global Music Player */ -}}
+﻿<script src="/lib/aplayer/APlayer.min.js"></script>
 
-<div id="aplayer"></div>
 <script>
-(function(){var el=document.getElementById("aplayer");if(el&&el.parentNode){el.parentNode.removeChild(el);document.body.appendChild(el);}})();
+
+// ===============================
+// 网易云歌曲ID库
+// 以后只需要在这里添加ID即可
+// ===============================
+
+let musicIds = [
+
+    "1888933954",   // 道别是一件难事
+    "37240058",     // 告诉我 Live
+    "37239070",     // 太聪明 Live
+    "37240060",     // 旅行的意义 Live
+    "3363432414",   // 模特
+    "2101067848",   // 天后
+    "2605274338",   // 可你听见了
+    "4968396"       // ティガの里、遥か
+
+];
+
+
+// ===============================
+// 自动获取网易云歌曲信息
+// ===============================
+
+async function get163Music(ids){
+
+    let playlist=[];
+
+
+    for(let id of ids){
+
+        try{
+
+            let response = await fetch(
+                `https://music.163.com/api/song/detail?ids=[${id}]`
+            );
+
+
+            let json = await response.json();
+
+
+            let song=json.songs[0];
+
+
+            if(song){
+
+                playlist.push({
+
+                    name:song.name,
+
+
+                    artist:song.artists
+                        .map(item=>item.name)
+                        .join(" / "),
+
+
+                    url:
+                    `https://music.163.com/song/media/outer/url?id=${id}.mp3`,
+
+
+                    cover:
+                    song.album.picUrl+
+                    "?param=90y90"
+
+                });
+
+            }
+
+
+        }catch(error){
+
+            console.log(
+                "网易云歌曲加载失败:",
+                id
+            );
+
+        }
+
+    }
+
+
+    return playlist;
+
+}
+
+
+
+// ===============================
+// 初始化播放器
+// ===============================
+
+(async()=>{
+
+
+    let audioList =
+        await get163Music(musicIds);
+
+
+
+    var ap = new APlayer({
+
+        container:
+        document.getElementById('aplayer'),
+
+
+        fixed:true,
+
+
+        mini:true,
+
+
+        autoplay:false,
+
+
+        theme:'#2d96bd',
+
+
+        loop:'all',
+
+
+        order:'list',
+
+
+        preload:'auto',
+
+
+        volume:0.7,
+
+
+        mutex:true,
+
+
+        listFolded:false,
+
+
+        lrcType:0,
+
+
+        audio:audioList
+
+    });
+
+
+})();
+
+
 </script>
-
-<script src="/lib/aplayer/APlayer.min.js"></script>
-<script>
-var ap = new APlayer({
-    container: document.getElementById('aplayer'),
-    fixed: true,
-    mini: true,
-    autoplay: false,
-    theme: '#2d96bd',
-    loop: 'all',
-    order: 'list',
-    preload: 'auto',
-    volume: 0.7,
-    mutex: true,
-    listFolded: false,
-    lrcType: 0,
-    audio: [
-        {"name":"告诉我 (Live)","artist":"陈绮贞","url":"https://music.163.com/song/media/outer/url?id=37240058.mp3","cover":"https://p1.music.126.net/haTIbpkwpBOz-pW2WGt37w==/3309530001047798.jpg?param=90y90"},
-        {"name":"太聪明 (Live)","artist":"陈绮贞","url":"https://music.163.com/song/media/outer/url?id=37239070.mp3","cover":"https://p1.music.126.net/haTIbpkwpBOz-pW2WGt37w==/3309530001047798.jpg?param=90y90"},
-        {"name":"旅行的意义(Live)","artist":"陈绮贞","url":"https://music.163.com/song/media/outer/url?id=37240060.mp3","cover":"https://p2.music.126.net/haTIbpkwpBOz-pW2WGt37w==/3309530001047798.jpg?param=90y90"},
-        {"name":"模特","artist":"Jade杰德","url":"https://music.163.com/song/media/outer/url?id=3363432414.mp3","cover":"https://p1.music.126.net/E80e7kDy7bxL3vRPUvrzng==/109951172945110033.jpg?param=90y90"},
-        {"name":"天后","artist":"卢卢快闭嘴","url":"https://music.163.com/song/media/outer/url?id=2101067848.mp3","cover":"https://p1.music.126.net/_TV32cQnDUP2SAtCPUEtoA==/109951169066704919.jpg?param=90y90"},
-        {"name":"可你听见了","artist":"DOUDOU","url":"https://music.163.com/song/media/outer/url?id=2605274338.mp3","cover":"https://p1.music.126.net/7DO7fn5_G7CtSPrTtenvnw==/109951169759746430.jpg?param=90y90"},
-        {"name":"ティガの里、遥か (M-20) ","artist":"矢野立美","url":"https://music.163.com/song/media/outer/url?id=4968396.mp3","cover":"https://p1.music.126.net/YPWNxSflcoUp1T14SAfMFg==/109951169358657780.jpg?param=90y90"}
-        {"name":"道别是一件难事 ","artist":"上海彩虹室内合唱团","url":"https://music.163.com/song/media/outer/url?id=1888933954.mp3","cover":"https://p1.music.126.net/PNSDtZUDYbPRRuk7kJlywA==/109951166544751174.jpg?param=90y90"}
-    ]
-});
-</script>
-
-
-
