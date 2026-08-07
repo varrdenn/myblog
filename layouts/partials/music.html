@@ -1,4 +1,11 @@
-﻿<script src="/lib/aplayer/APlayer.min.js"></script>
+﻿{{- /* Global Music Player */ -}}
+
+<div id="aplayer"></div>
+<script>
+(function(){var el=document.getElementById("aplayer");if(el&&el.parentNode){el.parentNode.removeChild(el);document.body.appendChild(el);}})();
+</script>
+
+<script src="/lib/aplayer/APlayer.min.js"></script>
 
 <script>
 
@@ -148,3 +155,6 @@ async function get163Music(ids){
 
 
 </script>
+
+
+
