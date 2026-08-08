@@ -6,6 +6,15 @@
     --sys-font-family: "仓耳今楷03", -apple-system, BlinkMacSystemFont, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
     --accent: #2d96bd;
     --accent-light: rgba(45,150,189,0.08);
+    --bold-color: rgb(220,20,60);
+    --bold-weight: 700;
+    --bold-radius: 4px;
+    --bold-padding: 0 2px;
+    --highlight-bg-light: red;
+    --highlight-bg-dark: #3464ff;
+    --highlight-color: white;
+    --highlight-radius: 5px;
+    --highlight-padding: 2px;
     --shadow-sm: 0 1px 4px rgba(0,0,0,0.04);
     --shadow-md: 0 2px 8px rgba(0,0,0,0.07), 0 4px 20px rgba(0,0,0,0.05);
     --shadow-lg: 0 4px 16px rgba(0,0,0,0.12), 0 8px 30px rgba(0,0,0,0.1);
@@ -56,9 +65,55 @@ body {
     text-indent: 0;
 }
 
-.single .content h1, .article-content h1 { font-size: 1.8rem; font-weight: 700; margin-top: 2em; }
-.single .content h2, .article-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 1.8em; }
-.single .content h3, .article-content h3 { font-size: 1.3rem; font-weight: 700; margin-top: 1.5em; }
+.single .content h1, .article-content h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 2em;
+    border-bottom: 2px solid var(--accent-light);
+    padding-bottom: 0.3em;
+}
+.single .content h2, .article-content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 1.8em;
+    border-left: 4px solid var(--accent);
+    padding-left: 0.6em;
+}
+.single .content h3, .article-content h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-top: 1.5em;
+    border-left: 3px solid rgba(45,150,189,0.45);
+    padding-left: 0.5em;
+}
+
+/* ========== 加粗与文字高亮（参考 Obsidian CSS） ========== */
+.single .content strong,
+.article-content strong {
+    color: var(--bold-color);
+    font-weight: var(--bold-weight);
+    border-radius: var(--bold-radius);
+    padding: var(--bold-padding);
+}
+
+.single .content mark,
+.article-content mark {
+    background: var(--highlight-bg-light);
+    color: var(--highlight-color);
+    border-radius: var(--highlight-radius);
+    padding: var(--highlight-padding);
+}
+
+[theme="dark"] .single .content mark,
+[theme="dark"] .article-content mark {
+    background: var(--highlight-bg-dark);
+    color: var(--highlight-color);
+}
+
+[theme="dark"] .single .content strong,
+[theme="dark"] .article-content strong {
+    color: var(--bold-color);
+}
 
 /* ========== 卡片阴影增强 ========== */
 .single.summary {
@@ -92,6 +147,28 @@ pre {
 }
 code { word-break: break-all; }
 .highlight pre { white-space: pre-wrap !important; word-break: break-all; }
+.single .content code, .article-content code {
+    background: rgba(45,150,189,0.08);
+    color: #b3214f;
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+}
+.single .content pre code, .article-content pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    border-radius: 0;
+}
+[theme="dark"] .single .content code,
+[theme="dark"] .article-content code {
+    background: rgba(85,189,226,0.1);
+    color: #e5bf78;
+}
+[theme="dark"] .single .content pre code,
+[theme="dark"] .article-content pre code {
+    background: transparent;
+    color: inherit;
+}
 
 /* ========== 块引用美化 ========== */
 blockquote {
@@ -100,6 +177,20 @@ blockquote {
     padding: 12px 18px;
     margin: 1em 0;
     border-radius: 0 6px 6px 0;
+}
+
+[theme="dark"] blockquote {
+    border-left-color: #55bde2;
+    background: rgba(85,189,226,0.08);
+}
+
+/* ========== 图片居中（参考 yaozhuwa@CSS.css） ========== */
+.single .content img,
+.article-content img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 6px;
 }
 
 /* ========== FixIt 暗色模式全局 ========== */

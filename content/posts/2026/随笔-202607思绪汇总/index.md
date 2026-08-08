@@ -56,11 +56,11 @@ You are always my hero.
 ![](随笔-202607思绪汇总-20260712.png)
 
 ![](随笔-202607思绪汇总-20260712-1.png)
-我靠，《迪加奥特曼》这部作品真的太美好了。
+我靠，《迪迦奥特曼》这部作品真的太美好了。
 
 ## 博客维护小日记
 202607131046
-刚刚用 condex 把博客维护了一次，大概修复了一些形式 bug（老生常谈的一个问题是，目前我这个人行为动机是形式大于逻辑，所以有时候会做一些拟人行为，搞得我很抽象）。我得想想我做博客的目的是什么？是炫耀自己吗？也没有什么好炫耀的啊。
+刚刚用 Codex 把博客维护了一次，大概修复了一些形式 bug（老生常谈的一个问题是，目前我这个人行为动机是形式大于逻辑，所以有时候会做一些拟人行为，搞得我很抽象）。我得想想我做博客的目的是什么？是炫耀自己吗？也没有什么好炫耀的啊。
 ## 观小许的成绩有感
 202607152316
 ![](随笔-202607思绪汇总-20260715.jpg)
@@ -124,10 +124,10 @@ You are always my hero.
 202607211554
 Author：**H. Holden Thorp**
 Editor-in-Chief of the Science journals
-There’s a saying in the ==management world==, popularized by NASA administrator Daniel Goldin in the 1990s, that the goal of technological improvements is to **make products faster, better, and cheaper.** Although this strategy had some success in the aerospace industry, the zealots of artificial intelligence (AI) have been making the same argument regarding how it will transform work, claiming that so little human effort will be required that humanity will enter an era of ==radical abundance==, free from disease, drudgery, and danger, among other benefits, leaving society with more time for creative pursuits.
+There’s a saying in the ==management world== , popularized by NASA administrator Daniel Goldin in the 1990s, that the goal of technological improvements is to **make products faster, better, and cheaper.** Although this strategy had some success in the aerospace industry, the zealots of artificial intelligence (AI) have been making the same argument regarding how it will transform work, claiming that so little human effort will be required that humanity will enter an era of ==radical abundance== , free from disease, drudgery, and danger, among other benefits, leaving society with more time for creative pursuits.
 	技术改进的目标，是让产品变得更快、更好、更便宜。
 	radical abundance 物质极其富裕
-But history tells a different story. When machines began to increase productivity during the second industrial revolution, American engineer Frederick Winslow Taylor’s The Principles of Scientific Management encouraged corporations to use ==surveillance== to get employees to work harder and longer, an approach that exhausted and discouraged workers and led to the transfer of knowledge and any decision-making from workers to management, **while enriching the profits for only those at the top**. Yet, it remains foundational to the American economic enterprise.
+But history tells a different story. When machines began to increase productivity during the second industrial revolution, American engineer Frederick Winslow Taylor’s The Principles of Scientific Management encouraged corporations to use  ==surveillance== to get employees to work harder and longer, an approach that exhausted and discouraged workers and led to the transfer of knowledge and any decision-making from workers to management, **while enriching the profits for only those at the top**. Yet, it remains foundational to the American economic enterprise.
 	surveillance 监督手段
 	让利润只流向最上层的人
 Indeed, scientific publishing is starting to experience some ==Taylorism== with the insertion of AI. Rigorous human checking of AI-generated research papers is creating bottlenecks as publishers strive to maintain the integrity of the scientific record. The challenge is requiring even more human effort, making the whole endeavor slower and more expensive.
