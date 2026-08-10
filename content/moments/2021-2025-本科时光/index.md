@@ -1,6 +1,6 @@
 ﻿---
 title: "本科时光"
-date: 2021-09-26
+date: 2021-09-09
 lastmod: 2025-06-12
 draft: false
 ---

@@ -55,6 +55,14 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     title = ""
   [[menu.main]]
     weight = 4
+    identifier = "follow"
+    pre = "<i class='fa fa-tv' aria-hidden='true'></i>"
+    post = ""
+    name = "Follows"
+    url = "/follows/"
+    title = ""
+  [[menu.main]]
+    weight = 5
     identifier = "links"
     pre = "<i class='fa fa-link' aria-hidden='true'></i>"
     post = ""
@@ -62,7 +70,7 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     url = "/links/"
     title = ""
   [[menu.main]]
-    weight = 5
+    weight = 6
     identifier = "about"
     pre = "<i class='fa fa-address-card' aria-hidden='true'></i>"
     post = ""
