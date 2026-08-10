@@ -31,7 +31,7 @@ ignoreLogs = ["warning-goldmark-raw-html"]
   [[menu.main]]
     weight = 1
     identifier = "home"
-    pre = "<i class='fa fa-home' aria-hidden='true'></i>"
+    pre = "<i class='fa fa-house-user' aria-hidden='true'></i>"
     post = ""
     name = "HOME"
     url = "/"
@@ -48,23 +48,31 @@ ignoreLogs = ["warning-goldmark-raw-html"]
   [[menu.main]]
     weight = 3
     identifier = "moments"
-    pre = "<i class='fa fa-clock' aria-hidden='true'></i>"
+    pre = "<i class='fa-solid fa-image' aria-hidden='true'></i>"
     post = ""
     name = "Moments"
     url = "/moments/"
     title = ""
   [[menu.main]]
     weight = 4
+    identifier = "follow"
+    pre = "<i class='fa-solid fa-star' aria-hidden='true'></i>"
+    post = ""
+    name = "Follows"
+    url = "/follows/"
+    title = ""
+  [[menu.main]]
+    weight = 5
     identifier = "links"
-    pre = "<i class='fa fa-link' aria-hidden='true'></i>"
+    pre = "<i class='fa-solid fa-share-nodes' aria-hidden='true'></i>"
     post = ""
     name = "Links"
     url = "/links/"
     title = ""
   [[menu.main]]
-    weight = 5
+    weight = 6
     identifier = "about"
-    pre = "<i class='fa fa-address-card' aria-hidden='true'></i>"
+    pre = "<i class='fa fa-id-card' aria-hidden='true'></i>"
     post = ""
     name = "About"
     url = "/about/"

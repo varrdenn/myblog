@@ -468,12 +468,12 @@ blockquote {
 
 /* --- 左侧: 所有文章列表 --- */
 .post-sidebar {
-    width: 240px;
-    min-width: 240px;
+    width: 200px;
+    min-width: 200px;
     flex-shrink: 0;
     position: sticky;
     top: calc(var(--header-height, 3.5rem) + 1rem);
-    max-height: calc(100vh - var(--header-height, 3.5rem) - 320px);
+    max-height: calc((100vh - var(--header-height, 3.5rem) - 320px) * 4 / 5);
     overflow-y: auto;
     background: var(--fixit-card-bg, #f8f8f8);
     border-radius: 10px;
@@ -559,15 +559,15 @@ blockquote {
     position: sticky !important;
     top: calc(var(--header-height, 3.5rem) + 1rem) !important;
     left: auto !important;
-    width: 200px !important;
-    min-width: 200px !important;
-    max-width: 200px !important;
+    width: 170px !important;
+    min-width: 170px !important;
+    max-width: 170px !important;
     flex-shrink: 0;
     display: block !important;
     visibility: visible !important;
     padding: 0 0 0 12px !important;
     border-left: 2px solid var(--fixit-border, #e3e3e3) !important;
-    max-height: calc(100vh - var(--header-height, 3.5rem) - 40px);
+    max-height: calc((100vh - var(--header-height, 3.5rem) - 40px) * 7 / 8);
     overflow-y: auto;
     scrollbar-width: thin;
 }
@@ -621,8 +621,8 @@ blockquote {
 
 /* --- 响应式 --- */
 @media (max-width: 1200px) {
-    .post-sidebar { width: 210px; min-width: 210px; }
-    .single-layout #toc-auto { width: 170px !important; min-width: 170px !important; max-width: 170px !important; }
+    .post-sidebar { width: 175px; min-width: 175px; }
+    .single-layout #toc-auto { width: 145px !important; min-width: 145px !important; max-width: 145px !important; }
 }
 
 @media (max-width: 960px) {
