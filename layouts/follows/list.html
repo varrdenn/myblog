@@ -1,47 +1,41 @@
 {{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
 
 {{- define "content" -}}
-    {{- $allPages := .Pages -}}
-    <div class="page moments-list">
+    {{- $entries := slice
+        (dict "en" "Events" "cn" "事件" "desc" "旅行、展览、演出与值得纪念的日子" "icon" "fa-solid fa-calendar-days" "url" "/follows/events/")
+        (dict "en" "Watching" "cn" "追剧" "desc" "电影、电视剧、动漫、特摄与纪录片的观看记录" "icon" "fa-solid fa-clapperboard" "url" "/follows/watching/")
+        (dict "en" "Reading" "cn" "阅读" "desc" "书籍、漫画与文章的阅读记录" "icon" "fa-solid fa-book-open" "url" "/follows/reading/")
+        (dict "en" "Music" "cn" "音乐" "desc" "专辑、单曲与现场的聆听记录" "icon" "fa-solid fa-music" "url" "/follows/music/")
+    -}}
+    <div class="page follows-page follows-home">
         <h1 class="single-title animate__animated animate__pulse animate__faster">
             {{- .Title -}}
         </h1>
 
         {{- with .Content -}}
-            <div class="moments-intro">{{- . -}}</div>
+            <div class="follows-intro">{{- . -}}</div>
         {{- end -}}
 
-        <div class="moments-grid">
-            {{- range $allPages.ByDate.Reverse -}}
-                <a href="{{ .RelPermalink }}" class="moment-card">
-                    {{- $featured := "" -}}
-                    {{- $imgs := partial "natural-sort.html" (.Resources.ByType "image") -}}
-                    {{- if gt (len $imgs) 0 -}}
-                        {{- $firstImg := index $imgs 0 -}}
-                        {{- $featured = ($firstImg.resource.Resize "400x").RelPermalink -}}
-                    {{- end -}}
-                    {{- if $featured -}}
-                        <div class="moment-card-img">
-                            <img src="{{ $featured }}" loading="lazy" alt="{{ .Title }}">
-                        </div>
-                    {{- else -}}
-                        <div class="moment-card-placeholder">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                                <circle cx="12" cy="12" r="10"/>
-                                <path d="M12 6v6l4 2"/>
-                            </svg>
-                        </div>
-                    {{- end -}}
-                    <div class="moment-card-body">
-                        <h3 class="moment-card-title">{{ .Title }}</h3>
-                        <span class="moment-card-date">{{ .Date.Format "2006-01-02" }}</span>
-                    </div>
+        <div class="follows-entries">
+            {{- range $entries -}}
+                <a href="{{ .url }}" class="follows-entry">
+                    <span class="follows-entry-icon">
+                        <i class="{{ .icon }}" aria-hidden="true"></i>
+                    </span>
+                    <span class="follows-entry-text">
+                        <span class="follows-entry-title-line">
+                            <span class="follows-entry-title">{{ .en }}</span>
+                            <span class="follows-entry-cn">{{ .cn }}</span>
+                        </span>
+                        <span class="follows-entry-desc">{{ .desc }}</span>
+                    </span>
+                    <i class="fa-solid fa-arrow-right follows-entry-arrow" aria-hidden="true"></i>
                 </a>
             {{- end -}}
         </div>
 
-        <div class="moments-footer">
-            <p>更多追剧记录，持续更新中…</p>
+        <div class="follows-footer">
+            <p>把看过的世界留在时间里，持续记录中…</p>
         </div>
     </div>
 {{- end -}}

@@ -1,0 +1,37 @@
+﻿{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $follows := where .Site.RegularPages "Section" "follows" -}}
+    {{- $events := where $follows "Params.category" "event" -}}
+    {{- $groups := $events.GroupByDate "2006" -}}
+    <div class="page follows-page events-page">
+        <a href="/follows/" class="follows-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> Follows
+        </a>
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Title -}}
+        </h1>
+        {{- with .Content -}}
+            <div class="follows-intro">{{- . -}}</div>
+        {{- end -}}
+        <div class="events-timeline">
+            {{- range $groups.Reverse -}}
+                <h2 class="events-year">{{ .Key }}</h2>
+                <ul class="events-list">
+                    {{- range .Pages.ByDate.Reverse -}}
+                        <li class="events-item">
+                            <span class="events-item-date">{{ .Date.Format "01.02" }}</span>
+                            <h3 class="events-item-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+                            {{- $desc := .Params.description | default (.Summary | plainify) -}}
+                            {{- with $desc -}}
+                                <p class="events-item-desc">{{ . }}</p>
+                            {{- end -}}
+                        </li>
+                    {{- end -}}
+                </ul>
+            {{- else -}}
+                <div class="media-grid-empty">还没有记录，慢慢来。</div>
+            {{- end -}}
+        </div>
+    </div>
+{{- end -}}

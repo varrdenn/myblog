@@ -1,0 +1,34 @@
+﻿{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $catName := .Params.category_name | default .Title -}}
+    {{- $follows := where .Site.RegularPages "Section" "follows" -}}
+    {{- $books := where $follows "Params.category" "book" -}}
+    {{- $items := where $books "Params.category_name" $catName -}}
+    <div class="page follows-page reading-category-page">
+        <a href="/follows/reading/" class="follows-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> Reading
+        </a>
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Title -}}
+        </h1>
+        {{- with .Params.description -}}
+            <div class="follows-intro"><p>{{ . }}</p></div>
+        {{- end -}}
+        {{- if gt (len $items) 0 -}}
+            <ul class="reading-group-list reading-category-list">
+                {{- range $items -}}
+                    <li class="reading-item">
+                        <a href="{{ .RelPermalink }}" class="reading-item-title">{{ .Title }}</a>
+                        <span class="reading-item-date">{{ .Date.Format "2006-01-02" }}</span>
+                    </li>
+                {{- end -}}
+            </ul>
+        {{- else -}}
+            <div class="media-grid-empty">这个分类还没有记录，慢慢来。</div>
+        {{- end -}}
+        <div class="follows-footer">
+            <p>阅读记录，持续更新中…</p>
+        </div>
+    </div>
+{{- end -}}

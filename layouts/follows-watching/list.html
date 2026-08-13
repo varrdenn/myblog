@@ -1,0 +1,31 @@
+﻿{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $follows := where .Site.RegularPages "Section" "follows" -}}
+    {{- $movies := where $follows "Params.category" "movie" -}}
+    {{- $tv := where $follows "Params.category" "tv" -}}
+    {{- $anime := where $follows "Params.category" "anime" -}}
+    {{- $tokusatsu := where $follows "Params.category" "tokusatsu" -}}
+    {{- $docs := where $follows "Params.category" "documentary" -}}
+    <div class="page follows-page watching-page">
+        <a href="/follows/" class="follows-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> Follows
+        </a>
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Title -}}
+        </h1>
+        {{- with .Content -}}
+            <div class="follows-intro">{{- . -}}</div>
+        {{- end -}}
+        <div class="watching-shelves">
+            {{- partial "media-shelf.html" (dict "en" "Movies" "cn" "电影" "url" "/follows/watching/movies/" "pages" $movies "limit" 3) -}}
+            {{- partial "media-shelf.html" (dict "en" "TV Series" "cn" "电视剧" "url" "/follows/watching/tv/" "pages" $tv "limit" 3) -}}
+            {{- partial "media-shelf.html" (dict "en" "Anime" "cn" "动漫" "url" "/follows/watching/anime/" "pages" $anime "limit" 3) -}}
+            {{- partial "media-shelf.html" (dict "en" "Tokusatsu" "cn" "特摄" "url" "/follows/watching/tokusatsu/" "pages" $tokusatsu "limit" 3) -}}
+            {{- partial "media-shelf.html" (dict "en" "Documentaries" "cn" "纪录片" "url" "/follows/watching/documentaries/" "pages" $docs "limit" 3) -}}
+        </div>
+        <div class="follows-footer">
+            <p>更多观看记录，持续更新中…</p>
+        </div>
+    </div>
+{{- end -}}

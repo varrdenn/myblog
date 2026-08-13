@@ -1,0 +1,33 @@
+﻿{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $type := .Params.category | default "movie" -}}
+    {{- $cn := .Params.category_cn | default "" -}}
+    {{- $desc := .Params.description | default "" -}}
+    {{- $follows := where .Site.RegularPages "Section" "follows" -}}
+    {{- $items := where $follows "Params.category" $type -}}
+    <div class="page follows-page media-category-page">
+        <a href="/follows/watching/" class="follows-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> Watching
+        </a>
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Title -}}
+        </h1>
+        <div class="follows-intro">
+            {{- with $cn -}}<span class="media-category-cn">{{ . }}</span>{{- end -}}
+            {{- with $desc -}}<span class="media-category-desc">{{ . }}</span>{{- end -}}
+        </div>
+        {{- with .Content -}}
+            <div class="media-category-content">{{- . -}}</div>
+        {{- end -}}
+        {{- if gt (len $items) 0 -}}
+            <div class="media-grid">
+                {{- range $items.ByDate.Reverse -}}
+                    {{- partial "media-card.html" . -}}
+                {{- end -}}
+            </div>
+        {{- else -}}
+            <div class="media-grid-empty">这个分类还没有记录，慢慢来。</div>
+        {{- end -}}
+    </div>
+{{- end -}}

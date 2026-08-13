@@ -1,0 +1,32 @@
+﻿{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $cats := slice
+        (dict "en" "Albums" "cn" "专辑" "desc" "整张专辑的聆听记录")
+        (dict "en" "Songs" "cn" "单曲" "desc" "单曲与循环播放")
+        (dict "en" "Artists" "cn" "音乐人" "desc" "喜欢的歌手与乐队")
+        (dict "en" "Live" "cn" "现场" "desc" "演出与现场记录")
+    -}}
+    <div class="page follows-page">
+        <a href="/follows/" class="follows-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> Follows
+        </a>
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Title -}}
+        </h1>
+        {{- with .Content -}}
+            <div class="follows-intro">{{- . -}}</div>
+        {{- end -}}
+        <div class="follows-placeholder-grid">
+            {{- range $cats -}}
+                <div class="follows-placeholder-card">
+                    <i class="fa-solid fa-music" aria-hidden="true"></i>
+                    <h3>{{ .en }}</h3>
+                    <span class="follows-placeholder-cn">{{ .cn }}</span>
+                    <p class="follows-placeholder-desc">{{ .desc }}</p>
+                    <span class="follows-placeholder-tag">规划中</span>
+                </div>
+            {{- end -}}
+        </div>
+    </div>
+{{- end -}}

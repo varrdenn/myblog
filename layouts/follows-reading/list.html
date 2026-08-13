@@ -1,0 +1,65 @@
+{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    {{- $follows := where .Site.RegularPages "Section" "follows" -}}
+    {{- $books := where $follows "Params.category" "book" -}}
+    {{- /* 分类按最近阅读日期首次出现排序，组内按日期倒序；每类最多展示 3 本 */ -}}
+    {{- $cats := slice -}}
+    {{- $grouped := dict -}}
+    {{- $catFolders := dict -}}
+    {{- range $books -}}
+        {{- $cat := .Params.category_name -}}
+        {{- if $cat -}}
+            {{- if not (in $cats $cat) -}}{{- $cats = $cats | append $cat -}}{{- end -}}
+            {{- $list := index $grouped $cat | default slice -}}
+            {{- $grouped = merge $grouped (dict $cat ($list | append .)) -}}
+            {{- $fpath := strings.Replace .File.Path "\\" "/" -1 -}}
+            {{- $folder := index (strings.Split $fpath "/") 2 -}}
+            {{- $catFolders = merge $catFolders (dict $cat $folder) -}}
+        {{- end -}}
+    {{- end -}}
+    <div class="page follows-page reading-page">
+        <a href="/follows/" class="follows-back">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i> Follows
+        </a>
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Title -}}
+        </h1>
+        {{- with .Content -}}
+            <div class="follows-intro">{{- . -}}</div>
+        {{- end -}}
+        {{- with .Site.GetPage "/follows/reading/好书" -}}
+            <div class="reading-booklist">
+                <a href="{{ .RelPermalink }}"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> 书单</a>
+            </div>
+        {{- end -}}
+        <div class="reading-groups">
+            {{- range $cats -}}
+                {{- $cat := . -}}
+                {{- $items := index $grouped $cat -}}
+                {{- $catPage := $.Site.GetPage (printf "/follows/reading/%s" (index $catFolders $cat)) -}}
+                <section class="reading-group">
+                    <div class="reading-group-head">
+                        <h2 class="reading-group-title">{{ $cat }}</h2>
+                        {{- if and (gt (len $items) 3) $catPage -}}
+                            <a class="reading-group-more" href="{{ $catPage.RelPermalink }}">View All &rarr;</a>
+                        {{- end -}}
+                    </div>
+                    <ul class="reading-group-list">
+                        {{- range first 3 $items -}}
+                            <li class="reading-item">
+                                <a href="{{ .RelPermalink }}" class="reading-item-title">{{ .Title }}</a>
+                                <span class="reading-item-date">{{ .Date.Format "2006-01-02" }}</span>
+                            </li>
+                        {{- end -}}
+                    </ul>
+                </section>
+            {{- else -}}
+                <div class="media-grid-empty">还没有阅读记录，慢慢来。</div>
+            {{- end -}}
+        </div>
+        <div class="follows-footer">
+            <p>阅读记录，持续更新中…</p>
+        </div>
+    </div>
+{{- end -}}

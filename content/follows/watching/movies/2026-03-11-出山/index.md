@@ -1,0 +1,14 @@
+---
+title: "《出山》"
+date: 2026-03-11
+draft: false
+category: "movie"
+aliases:
+  - "/follows/2026-03-11-出山/"
+---
+
+2026-03-11「出山」的观影记录与评论。
+
+## 笔记
+
+2018 年的一部电影。英文名称很有意思：The Compact Density of Stone；这部电影可以被下面这部《邓小平小道》全面兼容，可直接观看后者。

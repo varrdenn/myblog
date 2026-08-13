@@ -1,0 +1,33 @@
+﻿{{- /* MediaCard
+     Renders a single media cover card (poster style).
+     Expects a page context (.). Reuses the project's natural-sort + image resources.
+*/ -}}
+{{- $page := . -}}
+{{- $cover := "" -}}
+{{- $imgs := partial "natural-sort.html" ($page.Resources.ByType "image") -}}
+{{- if gt (len $imgs) 0 -}}
+    {{- $pick := index $imgs 0 -}}
+    {{- $found := false -}}
+    {{- range $imgs -}}
+        {{- if and (not $found) (gt .resource.Height .resource.Width) -}}
+            {{- $pick = . -}}
+            {{- $found = true -}}
+        {{- end -}}
+    {{- end -}}
+    {{- $cover = ($pick.resource.Resize "480x").RelPermalink -}}
+{{- end -}}
+<a href="{{ $page.RelPermalink }}" class="media-card">
+    <div class="media-card-cover">
+        {{- if $cover -}}
+            <img src="{{ $cover }}" loading="lazy" alt="{{ $page.Title }}">
+        {{- else -}}
+            <div class="media-card-placeholder">
+                <i class="fa-solid fa-film" aria-hidden="true"></i>
+            </div>
+        {{- end -}}
+    </div>
+    <div class="media-card-body">
+        <h4 class="media-card-title">{{ $page.Title }}</h4>
+        <span class="media-card-meta">{{ $page.Date.Format "2006" }}</span>
+    </div>
+</a>

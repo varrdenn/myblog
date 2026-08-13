@@ -1,0 +1,29 @@
+﻿{{- /* MediaShelf
+     Renders a category shelf: section title (+ CN) + View All + a row of MediaCards.
+     Expects a dict: { category, en, cn, url, pages, limit }.
+*/ -}}
+{{- $en := .en -}}
+{{- $cn := .cn | default "" -}}
+{{- $url := .url -}}
+{{- $pages := .pages -}}
+{{- $limit := .limit | default 6 -}}
+<section class="media-shelf">
+    <div class="media-shelf-head">
+        <div class="media-shelf-title-group">
+            <a class="media-shelf-title" href="{{ $url }}">{{ $en }}</a>
+            {{- with $cn -}}
+                <span class="media-shelf-cn">{{ . }}</span>
+            {{- end -}}
+        </div>
+        <a class="media-shelf-more" href="{{ $url }}">View All &rarr;</a>
+    </div>
+    {{- if gt (len $pages) 0 -}}
+        <div class="media-shelf-row">
+            {{- range first $limit $pages.ByDate.Reverse -}}
+                {{- partial "media-card.html" . -}}
+            {{- end -}}
+        </div>
+    {{- else -}}
+        <div class="media-shelf-empty">这个分类还没有记录，慢慢来。</div>
+    {{- end -}}
+</section>
