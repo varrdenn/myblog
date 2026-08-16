@@ -4,17 +4,23 @@
 */ -}}
 {{- $page := . -}}
 {{- $cover := "" -}}
-{{- $imgs := partial "natural-sort.html" ($page.Resources.ByType "image") -}}
-{{- if gt (len $imgs) 0 -}}
-    {{- $pick := index $imgs 0 -}}
-    {{- $found := false -}}
-    {{- range $imgs -}}
-        {{- if and (not $found) (gt .resource.Height .resource.Width) -}}
-            {{- $pick = . -}}
-            {{- $found = true -}}
+{{- $coverRes := $page.Resources.GetMatch "1.webp" -}}
+{{- if not $coverRes -}}
+    {{- $imgs := partial "natural-sort.html" ($page.Resources.ByType "image") -}}
+    {{- if gt (len $imgs) 0 -}}
+        {{- $pick := index $imgs 0 -}}
+        {{- $found := false -}}
+        {{- range $imgs -}}
+            {{- if and (not $found) (gt .resource.Height .resource.Width) -}}
+                {{- $pick = . -}}
+                {{- $found = true -}}
+            {{- end -}}
         {{- end -}}
+        {{- $coverRes = $pick.resource -}}
     {{- end -}}
-    {{- $cover = ($pick.resource.Resize "480x").RelPermalink -}}
+{{- end -}}
+{{- if $coverRes -}}
+    {{- $cover = ($coverRes.Resize "480x").RelPermalink -}}
 {{- end -}}
 <a href="{{ $page.RelPermalink }}" class="media-card">
     <div class="media-card-cover">
