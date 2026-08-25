@@ -18,16 +18,10 @@
             </div>
         </div>
 
-        {{- /* Images gallery - 九宫格 */ -}}
+        {{- /* Images gallery - 九宫格 (thumbnails + incremental render + lightbox) */ -}}
         {{- $imgs := partial "natural-sort.html" (.Resources.ByType "image") -}}
         {{- if gt (len $imgs) 0 -}}
-            <div class="moment-grid-gallery">
-                {{- range $imgs -}}
-                    <div class="moment-grid-item">
-                        <img src="{{ .resource.RelPermalink }}" loading="lazy" alt="{{ .resource.Title }}" data-full="{{ .resource.RelPermalink }}">
-                    </div>
-                {{- end -}}
-            </div>
+            {{- partial "moment-gallery.html" (dict "imgs" $imgs) -}}
         {{- end -}}
 
         {{- /* Content text below images */ -}}
@@ -49,73 +43,4 @@
             {{- end -}}
         </div>
     </article>
-
-    {{- /* Lightbox overlay */ -}}
-    {{- if gt (len $imgs) 0 -}}
-    <div class="moment-lightbox" id="moment-lightbox">
-        <div class="moment-lightbox-bg"></div>
-        <button class="moment-lightbox-prev" id="moment-lightbox-prev" title="上一张">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-        <div class="moment-lightbox-inner">
-            <img id="moment-lightbox-img" src="" alt=""><div class="moment-lightbox-filename" id="moment-lightbox-filename"></div>
-        </div>
-        <button class="moment-lightbox-next" id="moment-lightbox-next" title="下一张">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-        <div class="moment-lightbox-close">&times;</div>
-        <div class="moment-lightbox-counter" id="moment-lightbox-counter"></div>
-    </div>
-    <script>
-    (function(){
-        var lb = document.getElementById('moment-lightbox');
-        if (!lb) return;
-        var lbImg = document.getElementById('moment-lightbox-img');
-        var lbBg = lb.querySelector('.moment-lightbox-bg');
-        var lbClose = lb.querySelector('.moment-lightbox-close');
-        var lbPrev = document.getElementById('moment-lightbox-prev');
-        var lbNext = document.getElementById('moment-lightbox-next');
-        var lbCounter = document.getElementById('moment-lightbox-counter');
-        var imgs = Array.from(document.querySelectorAll('.moment-grid-item img'));
-        var currentIndex = -1;
-
-        function show(index) {
-            if (index < 0 || index >= imgs.length) return;
-            currentIndex = index;
-            lbImg.src = imgs[index].getAttribute('data-full') || imgs[index].src;var f=imgs[index].getAttribute('data-full')||imgs[index].src;f=decodeURIComponent(f.split('/').pop());document.getElementById('moment-lightbox-filename').textContent=f;
-            lb.classList.add('active');
-            if (lbCounter) {
-                lbCounter.textContent = (index + 1) + ' / ' + imgs.length;
-            }
-            if (lbPrev) lbPrev.style.display = imgs.length > 1 ? '' : 'none';
-            if (lbNext) lbNext.style.display = imgs.length > 1 ? '' : 'none';
-        }
-
-        imgs.forEach(function(img, i) {
-            img.addEventListener('click', function() { show(i); });
-        });
-
-        function prev() {
-            if (currentIndex > 0) show(currentIndex - 1);
-            else show(imgs.length - 1);
-        }
-        function next() {
-            if (currentIndex < imgs.length - 1) show(currentIndex + 1);
-            else show(0);
-        }
-        function close() { lb.classList.remove('active'); }
-
-        if (lbPrev) lbPrev.addEventListener('click', function(e) { e.stopPropagation(); prev(); });
-        if (lbNext) lbNext.addEventListener('click', function(e) { e.stopPropagation(); next(); });
-        lbBg.addEventListener('click', close);
-        lbClose.addEventListener('click', close);
-        document.addEventListener('keydown', function(e) {
-            if (!lb.classList.contains('active')) return;
-            if (e.key === 'Escape') close();
-            if (e.key === 'ArrowLeft') prev();
-            if (e.key === 'ArrowRight') next();
-        });
-    })();
-    </script>
-    {{- end -}}
 {{- end -}}

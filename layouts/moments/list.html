@@ -14,15 +14,23 @@
         <div class="moments-grid">
             {{- range $allPages.ByDate.Reverse -}}
                 <a href="{{ .RelPermalink }}" class="moment-card">
-                    {{- $featured := "" -}}
+                    {{- $cover := "" -}}
+                    {{- $coverSmall := "" -}}
                     {{- $imgs := partial "natural-sort.html" (.Resources.ByType "image") -}}
                     {{- if gt (len $imgs) 0 -}}
                         {{- $firstImg := index $imgs 0 -}}
-                        {{- $featured = ($firstImg.resource.Resize "400x").RelPermalink -}}
+                        {{- $oriented := $firstImg.resource.Filter images.AutoOrient -}}
+                        {{- $cover = $oriented.Resize "800x webp q80" -}}
+                        {{- $coverSmall = $oriented.Resize "400x webp q80" -}}
                     {{- end -}}
-                    {{- if $featured -}}
+                    {{- if $cover -}}
                         <div class="moment-card-img">
-                            <img src="{{ $featured }}" loading="lazy" alt="{{ .Title }}">
+                            <img src="{{ $cover.RelPermalink }}"
+                                 srcset="{{ $coverSmall.RelPermalink }} 400w, {{ $cover.RelPermalink }} 800w"
+                                 sizes="(max-width: 640px) 92vw, 400px"
+                                 loading="lazy" decoding="async"
+                                 alt="{{ .Title }}"
+                                 width="{{ $cover.Width }}" height="{{ $cover.Height }}">
                         </div>
                     {{- else -}}
                         <div class="moment-card-placeholder">

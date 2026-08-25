@@ -11,7 +11,8 @@
         {{- $pick := index $imgs 0 -}}
         {{- $found := false -}}
         {{- range $imgs -}}
-            {{- if and (not $found) (gt .resource.Height .resource.Width) -}}
+            {{- $oriented := .resource.Filter images.AutoOrient -}}
+            {{- if and (not $found) (gt $oriented.Height $oriented.Width) -}}
                 {{- $pick = . -}}
                 {{- $found = true -}}
             {{- end -}}
@@ -20,7 +21,8 @@
     {{- end -}}
 {{- end -}}
 {{- if $coverRes -}}
-    {{- $cover = ($coverRes.Resize "480x").RelPermalink -}}
+    {{- $oriented := $coverRes.Filter images.AutoOrient -}}
+    {{- $cover = ($oriented.Resize "480x").RelPermalink -}}
 {{- end -}}
 <a href="{{ $page.RelPermalink }}" class="media-card">
     <div class="media-card-cover">
