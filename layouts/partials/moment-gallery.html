@@ -1,0 +1,528 @@
+{{- /* moment-gallery.html
+     Shared photo grid + Lightbox for Moment / Follow detail pages.
+     Input:  dict "imgs" = result of partial "natural-sort.html" (.Resources.ByType "image")
+     Filename metadata (YYYY-MM-DD TITLE) is parsed ONCE at build time into:
+       year / month / day / title / monthKey(mk) / monthName(mn) / code(2025.09) /
+       date(2025.09.16) / hoverCaption(cap: "16 SEP")
+     - Images are grouped by month (year+month) into editorial sections; each month
+       uses a fixed 3-column contact-sheet grid (2 columns on mobile).
+     - Non-date filenames fall into one trailing ARCHIVE section.
+     - Grid renders only the first 12 thumbnails; the rest append in batches of 12
+       via IntersectionObserver, creating new month sections on demand.
+     - Build time generates WebP thumbnails (320w / 640w) and a 1920w hi-res WebP.
+     - Full-size images load only when opened in the Lightbox (+-1 preload).
+*/ -}}
+{{- $imgs := .imgs -}}
+{{- $count := len $imgs -}}
+{{- if gt $count 0 -}}
+    {{- $batchSize := 12 -}}
+    {{- $monthDict := dict "01" "JANUARY" "02" "FEBRUARY" "03" "MARCH" "04" "APRIL" "05" "MAY" "06" "JUNE" "07" "JULY" "08" "AUGUST" "09" "SEPTEMBER" "10" "OCTOBER" "11" "NOVEMBER" "12" "DECEMBER" -}}
+    {{- $items := slice -}}
+    {{- range $imgs -}}
+        {{- $r := .resource -}}
+        {{- /* Bake EXIF orientation into pixels before any resize / WebP conversion. */ -}}
+        {{- $oriented := $r.Filter images.AutoOrient -}}
+        {{- $sm := $oriented.Resize "320x webp q75" -}}
+        {{- $md := $oriented.Resize "640x webp q75" -}}
+        {{- $full := $oriented.Resize "1920x webp q82" -}}
+        {{- $name := replaceRE "(?i)[.][^.]+$" "" $r.Name | strings.TrimSpace -}}
+        {{- $yr := "" -}}{{- $mo := "" -}}{{- $dy := "" -}}
+        {{- $title := $name -}}
+        {{- $mk := "ARCHIVE" -}}{{- $mn := "" -}}{{- $code := "ARCHIVE" -}}
+        {{- $date := "" -}}{{- $cap := "" -}}
+        {{- if findRE "^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}[ _-]+" $name -}}
+            {{- $yr = replaceRE "^([0-9]{4})-.*$" "$1" $name -}}
+            {{- $moRaw := replaceRE "^[0-9]{4}-([0-9]{1,2})-.*$" "$1" $name -}}
+            {{- $dyRaw := replaceRE "^[0-9]{4}-[0-9]{1,2}-([0-9]{1,2}).*$" "$1" $name -}}
+            {{- $mo = cond (eq (len $moRaw) 1) (printf "0%s" $moRaw) $moRaw -}}
+            {{- $dy = strings.TrimLeft "0" $dyRaw -}}
+            {{- $title = replaceRE "^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}[ _-]+(.*)$" "$1" $name | strings.TrimSpace -}}
+            {{- /* explicit sequence markers: "留影-01" / "留影_1" */ -}}
+            {{- $title = replaceRE "[-_][0-9]{1,2}$" "" $title -}}
+            {{- /* legacy attached sequence digits: "留影1" / "留影10" (never inside a longer number) */ -}}
+            {{- $title = replaceRE "([^0-9])[0-9]{1,2}$" "$1" $title | strings.TrimSpace -}}
+            {{- $mk = printf "%s-%s" $yr $mo -}}
+            {{- $mn = index $monthDict $mo -}}
+            {{- $code = printf "%s.%s" $yr $mo -}}
+            {{- $date = printf "%s.%s.%s" $yr $mo $dyRaw -}}
+            {{- $cap = printf "%s %s" $dy (substr $mn 0 3) -}}
+        {{- end -}}
+        {{- /* dated sections (A) always come before the ARCHIVE section (B) */ -}}
+        {{- $okey := printf "%s%s" (cond (eq $mk "ARCHIVE") "B" "A") .sortKey -}}
+        {{- $items = $items | append (dict "sm" $sm.RelPermalink "md" $md.RelPermalink "full" $full.RelPermalink "w" $md.Width "h" $md.Height "alt" $title "title" $title "mk" $mk "mn" $mn "code" $code "date" $date "cap" $cap "yr" $yr "mo" $mo "dy" $dy "okey" $okey) -}}
+    {{- end -}}
+    {{- $items = sort $items "okey" -}}
+
+    <div class="moment-grid-gallery" id="moment-grid-gallery">
+        {{- $firstItems := first $batchSize $items -}}
+        {{- $prevMK := "" -}}
+        {{- range $idx, $item := $firstItems -}}
+            {{- if ne $item.mk $prevMK -}}
+                {{- if ne $prevMK "" -}}
+                </div>
+                </section>
+                {{- end -}}
+                <section class="moment-month" data-mk="{{ $item.mk }}">
+                    <header class="moment-month-header">
+                        <div class="moment-month-info">
+                            <div class="moment-month-code">{{ $item.code }}</div>
+                            {{- if ne $item.mn "" -}}<div class="moment-month-name">{{ $item.mn }}</div>{{- end -}}
+                        </div>
+                        <div class="moment-month-line"></div>
+                    </header>
+                    <div class="moment-month-grid">
+                {{- $prevMK = $item.mk -}}
+            {{- end -}}
+            <div class="moment-grid-item" data-index="{{ $idx }}">
+                <img src="{{ $item.md }}"
+                     srcset="{{ $item.sm }} 320w, {{ $item.md }} 640w"
+                     sizes="(max-width: 600px) 46vw, 250px"
+                     loading="lazy" decoding="async"
+                     alt="{{ $item.alt }}"
+                     width="{{ $item.w }}" height="{{ $item.h }}">
+                <div class="moment-grid-cap">
+                    {{- if ne $item.cap "" -}}<span class="cap-day">{{ $item.cap }}</span>{{- end -}}
+                    <span class="cap-title">{{ $item.title }}</span>
+                </div>
+            </div>
+        {{- end -}}
+        {{- if gt (len $firstItems) 0 -}}
+                </div>
+                </section>
+        {{- end -}}
+    </div>
+    {{- if gt $count $batchSize -}}
+        <div class="moment-grid-sentinel" id="moment-grid-sentinel" aria-hidden="true"></div>
+    {{- end -}}
+    <script type="application/json" id="moment-images-data">{{- $items | jsonify | safeJS -}}</script>
+
+    {{- /* Lightbox overlay */ -}}
+    <div class="moment-lightbox" id="moment-lightbox" role="dialog" aria-modal="true" aria-label="{{ T `lightbox` | default `图片预览` }}">
+        <div class="moment-lightbox-bg"></div>
+        <button class="moment-lightbox-prev" id="moment-lightbox-prev" type="button" title="{{ T `prevPhoto` | default `上一张` }}" aria-label="{{ T `prevPhoto` | default `上一张` }}">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="moment-lightbox-inner">
+            <div class="moment-lightbox-stage" id="moment-lightbox-stage">
+                <img class="moment-lightbox-preview" id="moment-lightbox-preview" src="" alt="">
+                <img class="moment-lightbox-full" id="moment-lightbox-full" src="" alt="">
+            </div>
+            <div class="moment-lightbox-meta" id="moment-lightbox-meta">
+                <div class="moment-lightbox-title" id="moment-lightbox-title"></div>
+                <div class="moment-lightbox-date" id="moment-lightbox-date"></div>
+                <div class="moment-lightbox-counter" id="moment-lightbox-counter"></div>
+            </div>
+        </div>
+        <button class="moment-lightbox-next" id="moment-lightbox-next" type="button" title="{{ T `nextPhoto` | default `下一张` }}" aria-label="{{ T `nextPhoto` | default `下一张` }}">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+        <button class="moment-lightbox-close" id="moment-lightbox-close" type="button" aria-label="{{ T `close` | default `关闭` }}">&times;</button>
+    </div>
+
+    <script>
+    (function () {
+        var gallery = document.getElementById('moment-grid-gallery');
+        var sentinel = document.getElementById('moment-grid-sentinel');
+        var dataEl = document.getElementById('moment-images-data');
+        var lb = document.getElementById('moment-lightbox');
+        if (!gallery || !dataEl || !lb) return;
+
+        var data = [];
+        try { data = JSON.parse(dataEl.textContent || '[]'); } catch (err) { data = []; }
+        var total = data.length;
+        if (!total) return;
+
+        var BATCH = 12;
+        var REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+        var OPEN_DUR = REDUCED ? 120 : 420;
+        var CLOSE_DUR = REDUCED ? 120 : 340;
+        var FADE_DUR = REDUCED ? 120 : 280;
+        var OPEN_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+        var CLOSE_EASE = 'cubic-bezier(0.4, 0, 0.2, 1)';
+        var rendered = gallery.querySelectorAll('.moment-grid-item').length;
+        var currentIndex = -1;
+        var lastFocused = null;
+        var loadedFull = {};
+        var preloads = [];
+        var closingTimer = null;
+        var switchTimer = null;
+        var switching = false;
+        var observer = null;
+        var animToken = 0;
+        var scrollbarPad = 0;
+
+        /* ---------- incremental grid rendering (12 per batch, month sections on demand) ---------- */
+        function makeItem(index, item) {
+            var div = document.createElement('div');
+            div.className = 'moment-grid-item';
+            div.setAttribute('data-index', index);
+            var img = document.createElement('img');
+            img.src = item.md;
+            img.srcset = item.sm + ' 320w, ' + item.md + ' 640w';
+            img.sizes = '(max-width: 600px) 46vw, 250px';
+            img.loading = 'lazy';
+            img.decoding = 'async';
+            img.alt = item.alt || '';
+            img.width = item.w;
+            img.height = item.h;
+            div.appendChild(img);
+            var cap = document.createElement('div');
+            cap.className = 'moment-grid-cap';
+            if (item.cap) {
+                var day = document.createElement('span');
+                day.className = 'cap-day';
+                day.textContent = item.cap;
+                cap.appendChild(day);
+            }
+            var title = document.createElement('span');
+            title.className = 'cap-title';
+            title.textContent = item.title || '';
+            cap.appendChild(title);
+            div.appendChild(cap);
+            return div;
+        }
+
+        function getMonthSection(item) {
+            var sec = gallery.querySelector('.moment-month[data-mk="' + item.mk + '"]');
+            if (sec) return sec;
+            sec = document.createElement('section');
+            sec.className = 'moment-month';
+            sec.setAttribute('data-mk', item.mk);
+            var header = document.createElement('header');
+            header.className = 'moment-month-header';
+            var info = document.createElement('div');
+            info.className = 'moment-month-info';
+            var code = document.createElement('div');
+            code.className = 'moment-month-code';
+            code.textContent = item.code || 'ARCHIVE';
+            info.appendChild(code);
+            if (item.mn) {
+                var mn = document.createElement('div');
+                mn.className = 'moment-month-name';
+                mn.textContent = item.mn;
+                info.appendChild(mn);
+            }
+            var line = document.createElement('div');
+            line.className = 'moment-month-line';
+            header.appendChild(info);
+            header.appendChild(line);
+            var grid = document.createElement('div');
+            grid.className = 'moment-month-grid';
+            sec.appendChild(header);
+            sec.appendChild(grid);
+            gallery.appendChild(sec);
+            return sec;
+        }
+
+        function appendBatch() {
+            var end = Math.min(rendered + BATCH, total);
+            var curKey = null;
+            var curGrid = null;
+            for (var i = rendered; i < end; i++) {
+                var item = data[i];
+                if (item.mk !== curKey) {
+                    curGrid = getMonthSection(item).querySelector('.moment-month-grid');
+                    curKey = item.mk;
+                }
+                curGrid.appendChild(makeItem(i, item));
+            }
+            rendered = end;
+            if (rendered >= total) {
+                if (observer) { observer.disconnect(); observer = null; }
+                if (sentinel) sentinel.remove();
+            }
+        }
+
+        if (rendered < total) {
+            if ('IntersectionObserver' in window && sentinel) {
+                observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) appendBatch();
+                    });
+                }, { rootMargin: '800px 0px' });
+                observer.observe(sentinel);
+            } else {
+                /* Progressive enhancement: no IO support -> render everything */
+                while (rendered < total) appendBatch();
+            }
+        }
+
+        /* Grid image load error -> keep placeholder background */
+        gallery.addEventListener('error', function (e) {
+            var t = e.target;
+            if (t && t.tagName === 'IMG' && t.closest) {
+                var item = t.closest('.moment-grid-item');
+                if (item) item.classList.add('img-error');
+            }
+        }, true);
+
+        /* ---------- Lightbox ---------- */
+        var stage = document.getElementById('moment-lightbox-stage');
+        var previewImg = document.getElementById('moment-lightbox-preview');
+        var fullImg = document.getElementById('moment-lightbox-full');
+        var lbBg = lb.querySelector('.moment-lightbox-bg');
+        var lbClose = document.getElementById('moment-lightbox-close');
+        var lbPrev = document.getElementById('moment-lightbox-prev');
+        var lbNext = document.getElementById('moment-lightbox-next');
+        var lbCounter = document.getElementById('moment-lightbox-counter');
+        var lbTitle = document.getElementById('moment-lightbox-title');
+        var lbDate = document.getElementById('moment-lightbox-date');
+
+        function rectCenter(r) {
+            return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+        }
+
+        /* Map rect `from` exactly onto rect `to` (per-axis scale, center-anchored). */
+        function flipTransform(from, to) {
+            var sx = from.width / to.width;
+            var sy = from.height / to.height;
+            var fc = rectCenter(to);
+            var tc = rectCenter(from);
+            return 'translate3d(' + (tc.x - fc.x) + 'px,' + (tc.y - fc.y) + 'px,0) scale(' + sx + ',' + sy + ')';
+        }
+
+        function inViewport(r) {
+            var vw = window.innerWidth || document.documentElement.clientWidth;
+            var vh = window.innerHeight || document.documentElement.clientHeight;
+            return r.width > 0 && r.height > 0 && r.right > 0 && r.bottom > 0 && r.left < vw && r.top < vh;
+        }
+
+        function lockScroll() {
+            scrollbarPad = window.innerWidth - document.documentElement.clientWidth;
+            if (scrollbarPad > 0) document.body.style.paddingRight = scrollbarPad + 'px';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function unlockScroll() {
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }
+
+        function clearPreloads() {
+            for (var i = 0; i < preloads.length; i++) {
+                preloads[i].onload = null;
+                preloads[i].onerror = null;
+            }
+            preloads = [];
+        }
+
+        function preloadAround(index) {
+            clearPreloads();
+            for (var j = index - 1; j <= index + 1; j++) {
+                if (j < 0 || j >= total || j === index) continue;
+                (function (url) {
+                    var im = new Image();
+                    im.onload = function () { loadedFull[url] = true; im.onload = null; };
+                    im.onerror = function () { im.onerror = null; };
+                    preloads.push(im);
+                    im.src = url;
+                })(data[j].full);
+            }
+        }
+
+        function showImage(index) {
+            var item = data[index];
+            if (!item) return;
+            currentIndex = index;
+            previewImg.setAttribute('alt', item.alt || '');
+            fullImg.setAttribute('alt', item.alt || '');
+            lbTitle.textContent = item.title || '';
+            lbDate.textContent = item.date || '';
+            lbCounter.textContent = (index + 1) + ' / ' + total;
+            if (lbPrev) lbPrev.style.display = total > 1 ? '' : 'none';
+            if (lbNext) lbNext.style.display = total > 1 ? '' : 'none';
+            preloadAround(index);
+
+            /* Preview layer = thumbnail, always visible until the full layer fades in. */
+            previewImg.src = item.md;
+            previewImg.width = item.w;
+            previewImg.height = item.h;
+            fullImg.width = item.w;
+            fullImg.height = item.h;
+            fullImg.src = item.full;
+            if (loadedFull[item.full]) {
+                fullImg.style.opacity = '1';
+                previewImg.classList.remove('is-pending');
+                return;
+            }
+            fullImg.style.opacity = '0';
+            previewImg.classList.add('is-pending');
+            var hi = new Image();
+            hi.onload = function () {
+                loadedFull[item.full] = true;
+                if (currentIndex === index) {
+                    /* Fade the hi-res layer over the preview: no size/transform change. */
+                    fullImg.style.opacity = '1';
+                    previewImg.classList.remove('is-pending');
+                }
+                hi.onload = null;
+                hi.onerror = null;
+            };
+            hi.onerror = function () {
+                if (currentIndex === index) previewImg.classList.remove('is-pending');
+                hi.onload = null;
+                hi.onerror = null;
+            };
+            hi.src = item.full;
+        }
+
+        function openAt(index) {
+            if (index < 0 || index >= total) return;
+            if (closingTimer) { clearTimeout(closingTimer); closingTimer = null; }
+            if (switchTimer) { clearTimeout(switchTimer); switchTimer = null; switching = false; }
+            animToken++;
+            var token = animToken;
+            var item = gallery.querySelector('.moment-grid-item[data-index="' + index + '"]');
+            lastFocused = document.activeElement;
+
+            lb.classList.add('active');
+            lb.classList.remove('is-closing');
+            lockScroll();
+            stage.style.transition = 'none';
+            stage.style.transform = '';
+            stage.style.willChange = REDUCED ? '' : 'transform, opacity';
+            fullImg.style.opacity = '0';
+            showImage(index);
+
+            var finalRect = stage.getBoundingClientRect();
+            if (REDUCED) {
+                /* Reduced motion: quick fade instead of FLIP */
+                stage.style.opacity = '0';
+                stage.style.transition = 'opacity 120ms ease';
+                void stage.offsetWidth; /* flush the first frame */
+                requestAnimationFrame(function () {
+                    if (token !== animToken) return;
+                    stage.style.opacity = '1';
+                });
+            } else if (item && finalRect.width > 0 && finalRect.height > 0) {
+                stage.style.opacity = '1';
+                var from = item.getBoundingClientRect();
+                stage.style.transformOrigin = '50% 50%';
+                stage.style.transform = flipTransform(from, finalRect);
+                void stage.offsetWidth; /* flush the first frame */
+                requestAnimationFrame(function () {
+                    if (token !== animToken) return;
+                    stage.style.transition = 'transform ' + OPEN_DUR + 'ms ' + OPEN_EASE + ', opacity ' + FADE_DUR + 'ms ease';
+                    stage.style.transform = '';
+                });
+            } else {
+                stage.style.opacity = '1';
+                stage.style.transition = 'opacity ' + FADE_DUR + 'ms ease';
+            }
+            if (lbClose) lbClose.focus();
+            setTimeout(function () {
+                if (token === animToken) stage.style.willChange = '';
+            }, OPEN_DUR + 120);
+        }
+
+        function switchTo(index) {
+            if (index < 0 || index >= total || index === currentIndex || switching) return;
+            switching = true;
+            var dir = index > currentIndex ? 1 : -1;
+            if (REDUCED) {
+                showImage(index);
+                switching = false;
+                return;
+            }
+            stage.style.transition = 'opacity 140ms ease';
+            stage.style.opacity = '0';
+            switchTimer = setTimeout(function () {
+                switchTimer = null;
+                if (!lb.classList.contains('active')) { switching = false; return; }
+                showImage(index);
+                stage.style.transition = 'none';
+                stage.style.transform = 'translate3d(' + (-dir * 14) + 'px,0,0)';
+                void stage.offsetWidth;
+                stage.style.transition = 'opacity 160ms ease, transform 240ms ' + OPEN_EASE;
+                stage.style.transform = '';
+                stage.style.opacity = '1';
+                switching = false;
+            }, 150);
+        }
+
+        function resetStage() {
+            stage.style.transition = '';
+            stage.style.transform = '';
+            stage.style.opacity = '';
+            stage.style.willChange = '';
+            fullImg.style.opacity = '';
+            previewImg.classList.remove('is-pending');
+            lb.classList.remove('is-closing');
+        }
+
+        function close() {
+            if (!lb.classList.contains('active') || closingTimer) return;
+            animToken++;
+            var token = animToken;
+            var target = null;
+            var item = gallery.querySelector('.moment-grid-item[data-index="' + currentIndex + '"]');
+            if (item) {
+                var r = item.getBoundingClientRect();
+                if (inViewport(r)) target = r;
+            }
+            var f = stage.getBoundingClientRect();
+            lb.classList.add('is-closing');
+            lb.classList.remove('active');
+            unlockScroll();
+            clearPreloads();
+            if (lastFocused && lastFocused.focus) lastFocused.focus();
+
+            if (REDUCED) {
+                stage.style.transition = 'transform ' + CLOSE_DUR + 'ms ease, opacity ' + CLOSE_DUR + 'ms ease';
+                stage.style.transform = 'scale(0.96)';
+                stage.style.opacity = '0';
+                closingTimer = setTimeout(function () {
+                    closingTimer = null;
+                    if (token !== animToken) return;
+                    resetStage();
+                }, CLOSE_DUR + 100);
+                return;
+            }
+            /* Chrome fades out first (120ms), then the image flies back. */
+            closingTimer = setTimeout(function () {
+                closingTimer = null;
+                if (token !== animToken) return;
+                if (target && f.width > 0 && f.height > 0) {
+                    stage.style.transition = 'transform ' + CLOSE_DUR + 'ms ' + CLOSE_EASE;
+                    stage.style.transform = flipTransform(target, f);
+                } else {
+                    stage.style.transition = 'transform ' + CLOSE_DUR + 'ms ease, opacity ' + CLOSE_DUR + 'ms ease';
+                    stage.style.transform = 'scale(0.96)';
+                    stage.style.opacity = '0';
+                }
+                closingTimer = setTimeout(function () {
+                    closingTimer = null;
+                    if (token !== animToken) return;
+                    resetStage();
+                }, CLOSE_DUR + 100);
+            }, 150);
+        }
+
+        gallery.addEventListener('click', function (e) {
+            var item = e.target && e.target.closest ? e.target.closest('.moment-grid-item') : null;
+            if (item && gallery.contains(item)) {
+                openAt(parseInt(item.getAttribute('data-index'), 10) || 0);
+            }
+        });
+
+        if (lbPrev) lbPrev.addEventListener('click', function (e) { e.stopPropagation(); switchTo((currentIndex - 1 + total) % total); });
+        if (lbNext) lbNext.addEventListener('click', function (e) { e.stopPropagation(); switchTo((currentIndex + 1) % total); });
+        if (lbBg) lbBg.addEventListener('click', close);
+        if (lbClose) lbClose.addEventListener('click', close);
+
+        document.addEventListener('keydown', function (e) {
+            if (!lb.classList.contains('active')) return;
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                close();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                switchTo((currentIndex - 1 + total) % total);
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                switchTo((currentIndex + 1) % total);
+            }
+        });
+    })();
+    </script>
+{{- end -}}
