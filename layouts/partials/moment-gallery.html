@@ -9,8 +9,8 @@
      - Non-date filenames fall into one trailing ARCHIVE section.
      - Grid renders only the first 12 thumbnails; the rest append in batches of 12
        via IntersectionObserver, creating new month sections on demand.
-     - Build time generates WebP thumbnails (320w / 640w) and a 1920w hi-res WebP.
-     - Full-size images load only when opened in the Lightbox (+-1 preload).
+     - Build time generates a single 640w WebP thumbnail per image.
+     - Full-size originals load only when opened in the Lightbox (no neighbor preload).
 */ -}}
 {{- $imgs := .imgs -}}
 {{- $count := len $imgs -}}
@@ -20,11 +20,7 @@
     {{- $items := slice -}}
     {{- range $imgs -}}
         {{- $r := .resource -}}
-        {{- /* Bake EXIF orientation into pixels before any resize / WebP conversion. */ -}}
-        {{- $oriented := $r.Filter images.AutoOrient -}}
-        {{- $sm := $oriented.Resize "320x webp q75" -}}
-        {{- $md := $oriented.Resize "640x webp q75" -}}
-        {{- $full := $oriented.Resize "1920x webp q82" -}}
+        {{- $md := $r.Resize "640x webp q75" -}}
         {{- $name := replaceRE "(?i)[.][^.]+$" "" $r.Name | strings.TrimSpace -}}
         {{- $yr := "" -}}{{- $mo := "" -}}{{- $dy := "" -}}
         {{- $title := $name -}}
@@ -49,7 +45,7 @@
         {{- end -}}
         {{- /* dated sections (A) always come before the ARCHIVE section (B) */ -}}
         {{- $okey := printf "%s%s" (cond (eq $mk "ARCHIVE") "B" "A") .sortKey -}}
-        {{- $items = $items | append (dict "sm" $sm.RelPermalink "md" $md.RelPermalink "full" $full.RelPermalink "w" $md.Width "h" $md.Height "alt" $title "title" $title "mk" $mk "mn" $mn "code" $code "date" $date "cap" $cap "yr" $yr "mo" $mo "dy" $dy "okey" $okey) -}}
+        {{- $items = $items | append (dict "md" $md.RelPermalink "full" $r.RelPermalink "w" $md.Width "h" $md.Height "alt" $title "title" $title "mk" $mk "mn" $mn "code" $code "date" $date "cap" $cap "yr" $yr "mo" $mo "dy" $dy "okey" $okey) -}}
     {{- end -}}
     {{- $items = sort $items "okey" -}}
 
@@ -75,8 +71,6 @@
             {{- end -}}
             <div class="moment-grid-item" data-index="{{ $idx }}">
                 <img src="{{ $item.md }}"
-                     srcset="{{ $item.sm }} 320w, {{ $item.md }} 640w"
-                     sizes="(max-width: 600px) 46vw, 250px"
                      loading="lazy" decoding="async"
                      alt="{{ $item.alt }}"
                      width="{{ $item.w }}" height="{{ $item.h }}">
@@ -143,7 +137,6 @@
         var currentIndex = -1;
         var lastFocused = null;
         var loadedFull = {};
-        var preloads = [];
         var closingTimer = null;
         var switchTimer = null;
         var switching = false;
@@ -158,8 +151,6 @@
             div.setAttribute('data-index', index);
             var img = document.createElement('img');
             img.src = item.md;
-            img.srcset = item.sm + ' 320w, ' + item.md + ' 640w';
-            img.sizes = '(max-width: 600px) 46vw, 250px';
             img.loading = 'lazy';
             img.decoding = 'async';
             img.alt = item.alt || '';
@@ -298,28 +289,6 @@
             document.body.style.paddingRight = '';
         }
 
-        function clearPreloads() {
-            for (var i = 0; i < preloads.length; i++) {
-                preloads[i].onload = null;
-                preloads[i].onerror = null;
-            }
-            preloads = [];
-        }
-
-        function preloadAround(index) {
-            clearPreloads();
-            for (var j = index - 1; j <= index + 1; j++) {
-                if (j < 0 || j >= total || j === index) continue;
-                (function (url) {
-                    var im = new Image();
-                    im.onload = function () { loadedFull[url] = true; im.onload = null; };
-                    im.onerror = function () { im.onerror = null; };
-                    preloads.push(im);
-                    im.src = url;
-                })(data[j].full);
-            }
-        }
-
         function showImage(index) {
             var item = data[index];
             if (!item) return;
@@ -331,8 +300,6 @@
             lbCounter.textContent = (index + 1) + ' / ' + total;
             if (lbPrev) lbPrev.style.display = total > 1 ? '' : 'none';
             if (lbNext) lbNext.style.display = total > 1 ? '' : 'none';
-            preloadAround(index);
-
             /* Preview layer = thumbnail, always visible until the full layer fades in. */
             previewImg.src = item.md;
             previewImg.width = item.w;
@@ -464,7 +431,6 @@
             lb.classList.add('is-closing');
             lb.classList.remove('active');
             unlockScroll();
-            clearPreloads();
             if (lastFocused && lastFocused.focus) lastFocused.focus();
 
             if (REDUCED) {
