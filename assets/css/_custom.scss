@@ -989,7 +989,28 @@ blockquote {
         0 4px 14px rgba(0, 0, 0, 0.12);
 }
 
-.moment-lightbox-stage > img {
+/* Viewport wrapper owns the user zoom/pan transform (translate + scale). */
+.moment-lightbox-viewport {
+    grid-area: 1 / 1;
+    display: grid;
+    transform-origin: 0 0;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: none;
+}
+
+.moment-lightbox.can-pan .moment-lightbox-viewport {
+    cursor: grab;
+}
+
+.moment-lightbox.can-pan .moment-lightbox-viewport.is-dragging,
+.moment-lightbox-viewport.is-dragging {
+    cursor: grabbing;
+}
+
+.moment-lightbox-viewport > img {
     grid-area: 1 / 1;
     width: auto;
     height: auto;
@@ -998,7 +1019,10 @@ blockquote {
     max-height: calc(100dvh - 136px);
     object-fit: contain;
     display: block;
+    user-select: none;
+    -webkit-user-drag: none;
 }
+
 
 .moment-lightbox-preview.is-pending {
     filter: blur(5px);
@@ -1184,7 +1208,7 @@ blockquote {
     .moment-lightbox-inner {
         max-width: calc(100vw - 24px);
     }
-    .moment-lightbox-stage > img {
+    .moment-lightbox-viewport > img {
         max-width: calc(100vw - 24px);
         max-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 168px);
         max-height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 168px);

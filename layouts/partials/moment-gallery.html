@@ -9,8 +9,8 @@
      - Non-date filenames fall into one trailing ARCHIVE section.
      - Grid renders only the first 12 thumbnails; the rest append in batches of 12
        via IntersectionObserver, creating new month sections on demand.
-     - Build time generates WebP thumbnails (320w / 640w) and a 1920w hi-res WebP.
-     - Full-size images load only when opened in the Lightbox (+-1 preload).
+     - Build time generates a single 640w WebP thumbnail per image.
+     - Full-size originals load only when opened in the Lightbox (no neighbor preload).
 */ -}}
 {{- $imgs := .imgs -}}
 {{- $count := len $imgs -}}
@@ -20,11 +20,7 @@
     {{- $items := slice -}}
     {{- range $imgs -}}
         {{- $r := .resource -}}
-        {{- /* Bake EXIF orientation into pixels before any resize / WebP conversion. */ -}}
-        {{- $oriented := $r.Filter images.AutoOrient -}}
-        {{- $sm := $oriented.Resize "320x webp q75" -}}
-        {{- $md := $oriented.Resize "640x webp q75" -}}
-        {{- $full := $oriented.Resize "1920x webp q82" -}}
+        {{- $md := $r.Resize "640x webp q75" -}}
         {{- $name := replaceRE "(?i)[.][^.]+$" "" $r.Name | strings.TrimSpace -}}
         {{- $yr := "" -}}{{- $mo := "" -}}{{- $dy := "" -}}
         {{- $title := $name -}}
@@ -49,7 +45,7 @@
         {{- end -}}
         {{- /* dated sections (A) always come before the ARCHIVE section (B) */ -}}
         {{- $okey := printf "%s%s" (cond (eq $mk "ARCHIVE") "B" "A") .sortKey -}}
-        {{- $items = $items | append (dict "sm" $sm.RelPermalink "md" $md.RelPermalink "full" $full.RelPermalink "w" $md.Width "h" $md.Height "alt" $title "title" $title "mk" $mk "mn" $mn "code" $code "date" $date "cap" $cap "yr" $yr "mo" $mo "dy" $dy "okey" $okey) -}}
+        {{- $items = $items | append (dict "md" $md.RelPermalink "full" $r.RelPermalink "w" $md.Width "h" $md.Height "alt" $title "title" $title "mk" $mk "mn" $mn "code" $code "date" $date "cap" $cap "yr" $yr "mo" $mo "dy" $dy "okey" $okey) -}}
     {{- end -}}
     {{- $items = sort $items "okey" -}}
 
@@ -75,8 +71,6 @@
             {{- end -}}
             <div class="moment-grid-item" data-index="{{ $idx }}">
                 <img src="{{ $item.md }}"
-                     srcset="{{ $item.sm }} 320w, {{ $item.md }} 640w"
-                     sizes="(max-width: 600px) 46vw, 250px"
                      loading="lazy" decoding="async"
                      alt="{{ $item.alt }}"
                      width="{{ $item.w }}" height="{{ $item.h }}">
@@ -104,8 +98,10 @@
         </button>
         <div class="moment-lightbox-inner">
             <div class="moment-lightbox-stage" id="moment-lightbox-stage">
-                <img class="moment-lightbox-preview" id="moment-lightbox-preview" src="" alt="">
-                <img class="moment-lightbox-full" id="moment-lightbox-full" src="" alt="">
+                <div class="moment-lightbox-viewport" id="moment-lightbox-viewport">
+                    <img class="moment-lightbox-preview" id="moment-lightbox-preview" src="" alt="" draggable="false">
+                    <img class="moment-lightbox-full" id="moment-lightbox-full" src="" alt="" draggable="false">
+                </div>
             </div>
             <div class="moment-lightbox-meta" id="moment-lightbox-meta">
                 <div class="moment-lightbox-title" id="moment-lightbox-title"></div>
@@ -143,7 +139,6 @@
         var currentIndex = -1;
         var lastFocused = null;
         var loadedFull = {};
-        var preloads = [];
         var closingTimer = null;
         var switchTimer = null;
         var switching = false;
@@ -158,8 +153,6 @@
             div.setAttribute('data-index', index);
             var img = document.createElement('img');
             img.src = item.md;
-            img.srcset = item.sm + ' 320w, ' + item.md + ' 640w';
-            img.sizes = '(max-width: 600px) 46vw, 250px';
             img.loading = 'lazy';
             img.decoding = 'async';
             img.alt = item.alt || '';
@@ -267,6 +260,87 @@
         var lbCounter = document.getElementById('moment-lightbox-counter');
         var lbTitle = document.getElementById('moment-lightbox-title');
         var lbDate = document.getElementById('moment-lightbox-date');
+        var viewport = document.getElementById('moment-lightbox-viewport');
+
+        /* ---------- zoom / pan state ---------- */
+        var MIN_SCALE = 0.5;
+        var MAX_SCALE = 5;
+        var ZOOM_STEP = 1.12;
+        var scale = 1;
+        var tx = 0;
+        var ty = 0;
+        var dragging = false;
+        var dragPointerId = null;
+        var dragStartX = 0;
+        var dragStartY = 0;
+        var dragStartTx = 0;
+        var dragStartTy = 0;
+
+        function readBaseSize() {
+            return { w: viewport ? viewport.offsetWidth : 0, h: viewport ? viewport.offsetHeight : 0 };
+        }
+
+        function clamp(value, lo, hi) {
+            if (hi < lo) return (lo + hi) / 2;
+            return Math.min(hi, Math.max(lo, value));
+        }
+
+        /* Keep the image findable: at least 48px of it stays inside the stage,
+           and axes smaller than the viewport stay centered. */
+        function clampPan() {
+            if (!viewport) return;
+            var base = readBaseSize();
+            var w = base.w * scale;
+            var h = base.h * scale;
+            var MIN_VIS = 48;
+            if (base.w <= 0 || base.h <= 0) return;
+            if (w <= base.w + 0.5) {
+                tx = (base.w - w) / 2;
+            } else {
+                tx = clamp(tx, MIN_VIS - w, base.w - MIN_VIS);
+            }
+            if (h <= base.h + 0.5) {
+                ty = (base.h - h) / 2;
+            } else {
+                ty = clamp(ty, MIN_VIS - h, base.h - MIN_VIS);
+            }
+        }
+
+        function applyViewportTransform(animate) {
+            if (!viewport) return;
+            viewport.style.transition = animate ? 'transform 70ms ease-out' : 'none';
+            viewport.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+            if (lb) lb.classList.toggle('can-pan', scale > 1.001);
+        }
+
+        function resetTransform() {
+            scale = 1;
+            tx = 0;
+            ty = 0;
+            dragging = false;
+            dragPointerId = null;
+            if (viewport) {
+                viewport.style.transition = 'none';
+                viewport.style.transform = '';
+                viewport.classList.remove('is-dragging');
+            }
+            if (lb) lb.classList.remove('can-pan');
+        }
+
+        function zoomAt(clientX, clientY, factor) {
+            if (!viewport || !lb) return;
+            var next = Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale * factor));
+            if (next === scale) return;
+            var rect = stage.getBoundingClientRect();
+            var mx = clientX - rect.left;
+            var my = clientY - rect.top;
+            var ratio = next / scale;
+            tx = ratio * tx + (1 - ratio) * mx;
+            ty = ratio * ty + (1 - ratio) * my;
+            scale = next;
+            clampPan();
+            applyViewportTransform(true);
+        }
 
         function rectCenter(r) {
             return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
@@ -298,31 +372,10 @@
             document.body.style.paddingRight = '';
         }
 
-        function clearPreloads() {
-            for (var i = 0; i < preloads.length; i++) {
-                preloads[i].onload = null;
-                preloads[i].onerror = null;
-            }
-            preloads = [];
-        }
-
-        function preloadAround(index) {
-            clearPreloads();
-            for (var j = index - 1; j <= index + 1; j++) {
-                if (j < 0 || j >= total || j === index) continue;
-                (function (url) {
-                    var im = new Image();
-                    im.onload = function () { loadedFull[url] = true; im.onload = null; };
-                    im.onerror = function () { im.onerror = null; };
-                    preloads.push(im);
-                    im.src = url;
-                })(data[j].full);
-            }
-        }
-
         function showImage(index) {
             var item = data[index];
             if (!item) return;
+            resetTransform();
             currentIndex = index;
             previewImg.setAttribute('alt', item.alt || '');
             fullImg.setAttribute('alt', item.alt || '');
@@ -331,8 +384,6 @@
             lbCounter.textContent = (index + 1) + ' / ' + total;
             if (lbPrev) lbPrev.style.display = total > 1 ? '' : 'none';
             if (lbNext) lbNext.style.display = total > 1 ? '' : 'none';
-            preloadAround(index);
-
             /* Preview layer = thumbnail, always visible until the full layer fades in. */
             previewImg.src = item.md;
             previewImg.width = item.w;
@@ -441,6 +492,7 @@
         }
 
         function resetStage() {
+            resetTransform();
             stage.style.transition = '';
             stage.style.transform = '';
             stage.style.opacity = '';
@@ -464,7 +516,6 @@
             lb.classList.add('is-closing');
             lb.classList.remove('active');
             unlockScroll();
-            clearPreloads();
             if (lastFocused && lastFocused.focus) lastFocused.focus();
 
             if (REDUCED) {
@@ -509,6 +560,61 @@
         if (lbNext) lbNext.addEventListener('click', function (e) { e.stopPropagation(); switchTo((currentIndex + 1) % total); });
         if (lbBg) lbBg.addEventListener('click', close);
         if (lbClose) lbClose.addEventListener('click', close);
+
+        /* Wheel zoom (mouse-position anchored), only while the lightbox is open. */
+        lb.addEventListener('wheel', function (e) {
+            if (!lb.classList.contains('active')) return;
+            e.preventDefault();
+            zoomAt(e.clientX, e.clientY, e.deltaY > 0 ? 1 / ZOOM_STEP : ZOOM_STEP);
+        }, { passive: false });
+
+        /* Left-button drag to pan (Pointer Events + capture so fast drags never lose state). */
+        if (viewport) {
+            viewport.addEventListener('pointerdown', function (e) {
+                if (!lb.classList.contains('active') || dragging) return;
+                if (e.button !== 0) return;
+                dragging = true;
+                dragPointerId = e.pointerId;
+                dragStartX = e.clientX;
+                dragStartY = e.clientY;
+                dragStartTx = tx;
+                dragStartTy = ty;
+                viewport.classList.add('is-dragging');
+                viewport.style.transition = 'none';
+                if (viewport.setPointerCapture) {
+                    try { viewport.setPointerCapture(e.pointerId); } catch (err) { /* pointer already gone */ }
+                }
+                e.preventDefault();
+            });
+
+            viewport.addEventListener('pointermove', function (e) {
+                if (!dragging || e.pointerId !== dragPointerId) return;
+                tx = dragStartTx + (e.clientX - dragStartX);
+                ty = dragStartTy + (e.clientY - dragStartY);
+                clampPan();
+                applyViewportTransform(false);
+            });
+
+            function endDrag(e) {
+                if (!dragging || e.pointerId !== dragPointerId) return;
+                dragging = false;
+                dragPointerId = null;
+                viewport.classList.remove('is-dragging');
+                if (viewport.hasPointerCapture && viewport.hasPointerCapture(e.pointerId)) {
+                    viewport.releasePointerCapture(e.pointerId);
+                }
+            }
+            viewport.addEventListener('pointerup', endDrag);
+            viewport.addEventListener('pointercancel', endDrag);
+            viewport.addEventListener('lostpointercapture', endDrag);
+        }
+
+        /* Right-click closes the lightbox and never shows the browser menu while open. */
+        lb.addEventListener('contextmenu', function (e) {
+            if (!lb.classList.contains('active')) return;
+            e.preventDefault();
+            close();
+        });
 
         document.addEventListener('keydown', function (e) {
             if (!lb.classList.contains('active')) return;
