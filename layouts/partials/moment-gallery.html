@@ -276,8 +276,13 @@
         var dragStartTx = 0;
         var dragStartTy = 0;
 
-        function readBaseSize() {
-            return { w: viewport ? viewport.offsetWidth : 0, h: viewport ? viewport.offsetHeight : 0 };
+        function readPanSize() {
+            return {
+                stageW: stage ? stage.clientWidth : 0,
+                stageH: stage ? stage.clientHeight : 0,
+                imageW: viewport ? viewport.offsetWidth * scale : 0,
+                imageH: viewport ? viewport.offsetHeight * scale : 0
+            };
         }
 
         function clamp(value, lo, hi) {
@@ -285,32 +290,26 @@
             return Math.min(hi, Math.max(lo, value));
         }
 
-        /* Keep the image findable: at least 48px of it stays inside the stage,
-           and axes smaller than the viewport stay centered. */
+        /* Keep a small part of the image inside the stage without re-centering
+           it after the user starts dragging, regardless of the zoom level. */
         function clampPan() {
-            if (!viewport) return;
-            var base = readBaseSize();
-            var w = base.w * scale;
-            var h = base.h * scale;
-            var MIN_VIS = 48;
-            if (base.w <= 0 || base.h <= 0) return;
-            if (w <= base.w + 0.5) {
-                tx = (base.w - w) / 2;
-            } else {
-                tx = clamp(tx, MIN_VIS - w, base.w - MIN_VIS);
-            }
-            if (h <= base.h + 0.5) {
-                ty = (base.h - h) / 2;
-            } else {
-                ty = clamp(ty, MIN_VIS - h, base.h - MIN_VIS);
-            }
+            var size = readPanSize();
+            var MIN_VISIBLE = 80;
+            if (size.stageW <= 0 || size.stageH <= 0 || size.imageW <= 0 || size.imageH <= 0) return;
+
+            /* If the image is smaller than the requested visible area, use its
+               full dimension. This keeps the bounds valid for thumbnails too. */
+            var visibleX = Math.min(MIN_VISIBLE, size.imageW, size.stageW);
+            var visibleY = Math.min(MIN_VISIBLE, size.imageH, size.stageH);
+            tx = clamp(tx, visibleX - size.imageW, size.stageW - visibleX);
+            ty = clamp(ty, visibleY - size.imageH, size.stageH - visibleY);
         }
 
         function applyViewportTransform(animate) {
             if (!viewport) return;
             viewport.style.transition = animate ? 'transform 70ms ease-out' : 'none';
             viewport.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
-            if (lb) lb.classList.toggle('can-pan', scale > 1.001);
+            if (lb) lb.classList.toggle('can-pan', lb.classList.contains('active'));
         }
 
         function resetTransform() {

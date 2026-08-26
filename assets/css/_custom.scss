@@ -982,6 +982,8 @@ blockquote {
 .moment-lightbox-stage {
     position: relative;
     display: grid;
+    max-width: calc(100vw - 48px);
+    max-height: calc(100dvh - 136px);
     border-radius: 4px;
     overflow: hidden;
     box-shadow:
@@ -993,6 +995,9 @@ blockquote {
 .moment-lightbox-viewport {
     grid-area: 1 / 1;
     display: grid;
+    position: relative;
+    max-width: calc(100vw - 48px);
+    max-height: calc(100dvh - 136px);
     transform-origin: 0 0;
     will-change: transform;
     user-select: none;
@@ -1001,11 +1006,11 @@ blockquote {
     touch-action: none;
 }
 
-.moment-lightbox.can-pan .moment-lightbox-viewport {
+.moment-lightbox.active .moment-lightbox-viewport {
     cursor: grab;
 }
 
-.moment-lightbox.can-pan .moment-lightbox-viewport.is-dragging,
+.moment-lightbox.active .moment-lightbox-viewport.is-dragging,
 .moment-lightbox-viewport.is-dragging {
     cursor: grabbing;
 }
@@ -1021,6 +1026,7 @@ blockquote {
     display: block;
     user-select: none;
     -webkit-user-drag: none;
+    pointer-events: none;
 }
 
 

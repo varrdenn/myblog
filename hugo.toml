@@ -80,6 +80,8 @@ ignoreLogs = ["warning-goldmark-raw-html"]
 
 [params]
   defaultTheme = "auto"
+  # Fingerprint generated CSS/JS so deployments cannot reuse a stale Lightbox bundle.
+  fingerprint = "sha512"
   dateFormat = "2006-01-02"
   title = "Varden"
   description = "欢迎来到我的博客"
