@@ -99,7 +99,7 @@
         <div class="moment-lightbox-inner">
             <div class="moment-lightbox-stage" id="moment-lightbox-stage">
                 <div class="moment-lightbox-viewport" id="moment-lightbox-viewport">
-                    <img class="moment-lightbox-preview" id="moment-lightbox-preview" src="" alt="" draggable="false">
+                    <img class="moment-lightbox-preview" id="moment-lightbox-preview" src="" alt="" draggable="false" aria-hidden="true">
                     <img class="moment-lightbox-full" id="moment-lightbox-full" src="" alt="" draggable="false">
                 </div>
             </div>
@@ -376,14 +376,14 @@
             if (!item) return;
             resetTransform();
             currentIndex = index;
-            previewImg.setAttribute('alt', item.alt || '');
             fullImg.setAttribute('alt', item.alt || '');
             lbTitle.textContent = item.title || '';
             lbDate.textContent = item.date || '';
             lbCounter.textContent = (index + 1) + ' / ' + total;
             if (lbPrev) lbPrev.style.display = total > 1 ? '' : 'none';
             if (lbNext) lbNext.style.display = total > 1 ? '' : 'none';
-            /* Preview layer = thumbnail, always visible until the full layer fades in. */
+            /* Preview establishes the viewport size until the full layer is ready. */
+            viewport.classList.remove('is-full-loaded');
             previewImg.src = item.md;
             previewImg.width = item.w;
             previewImg.height = item.h;
@@ -391,19 +391,17 @@
             fullImg.height = item.h;
             fullImg.src = item.full;
             if (loadedFull[item.full]) {
-                fullImg.style.opacity = '1';
                 previewImg.classList.remove('is-pending');
+                viewport.classList.add('is-full-loaded');
                 return;
             }
-            fullImg.style.opacity = '0';
             previewImg.classList.add('is-pending');
             var hi = new Image();
             hi.onload = function () {
                 loadedFull[item.full] = true;
                 if (currentIndex === index) {
-                    /* Fade the hi-res layer over the preview: no size/transform change. */
-                    fullImg.style.opacity = '1';
                     previewImg.classList.remove('is-pending');
+                    viewport.classList.add('is-full-loaded');
                 }
                 hi.onload = null;
                 hi.onerror = null;
@@ -431,7 +429,6 @@
             stage.style.transition = 'none';
             stage.style.transform = '';
             stage.style.willChange = REDUCED ? '' : 'transform, opacity';
-            fullImg.style.opacity = '0';
             showImage(index);
 
             var finalRect = stage.getBoundingClientRect();
@@ -496,8 +493,8 @@
             stage.style.transform = '';
             stage.style.opacity = '';
             stage.style.willChange = '';
-            fullImg.style.opacity = '';
             previewImg.classList.remove('is-pending');
+            viewport.classList.remove('is-full-loaded');
             lb.classList.remove('is-closing');
         }
 

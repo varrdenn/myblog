@@ -1029,15 +1029,32 @@ blockquote {
     pointer-events: none;
 }
 
-
-.moment-lightbox-preview.is-pending {
-    filter: blur(5px);
-    transition: filter 0.3s ease;
+.moment-lightbox-viewport > .moment-lightbox-preview {
+    opacity: 1;
+    transition: opacity 0.22s ease, filter 0.3s ease;
 }
 
-.moment-lightbox-full {
+.moment-lightbox-viewport > .moment-lightbox-preview.is-pending {
+    filter: blur(5px);
+}
+
+.moment-lightbox-viewport > .moment-lightbox-full {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
     opacity: 0;
     transition: opacity 0.22s ease;
+}
+
+.moment-lightbox-viewport.is-full-loaded > .moment-lightbox-preview {
+    opacity: 0;
+}
+
+.moment-lightbox-viewport.is-full-loaded > .moment-lightbox-full {
+    opacity: 1;
 }
 
 /* Buttons fade in right after the image starts flying; metadata waits a beat
