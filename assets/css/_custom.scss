@@ -639,14 +639,18 @@ blockquote {
     .post-sidebar-nav .sidebar-post-item { font-size: 0.78rem; }
 }
 
-/* ========== About 页面标题居中 ========== */
-.about-page .single-title {
-    text-align: center;
+/* ========== 导航页面标题统一左对齐 ========== */
+.single-title,
+.single-subtitle,
+.home-title,
+.home-subtitle,
+.home-disclaimer,
+.post-sidebar-header {
+    text-align: left !important;
 }
 
-/* ========== Posts 页面标题居中 ========== */
-.page.archive .single-title {
-    text-align: center;
+.links-page .content {
+    text-align: left;
 }
 
 /* ========== Moments 卡片布局 ========== */

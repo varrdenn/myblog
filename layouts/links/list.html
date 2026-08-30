@@ -1,0 +1,24 @@
+{{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
+
+{{- define "content" -}}
+    <div class="page links-page">
+        <h1 class="single-title animate__animated animate__pulse animate__faster">
+            {{- .Title -}}
+        </h1>
+
+        {{- with .Description -}}
+            <div class="follows-intro">
+                <p>{{- . -}}</p>
+                {{- with $.Params.intro_quote -}}
+                    <blockquote><p>{{ . }}</p></blockquote>
+                {{- end -}}
+            </div>
+        {{- end -}}
+
+        {{- with .Content -}}
+            <div class="content">
+                {{- . | safeHTML -}}
+            </div>
+        {{- end -}}
+    </div>
+{{- end -}}
