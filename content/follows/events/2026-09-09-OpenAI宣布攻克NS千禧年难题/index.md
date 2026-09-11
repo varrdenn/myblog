@@ -22,7 +22,4 @@ The problem concerns whether the description of smooth three-dimensional fluid m
 
 ![](OpenAI-We’re_sharing_a_solu_Images-20260909184708.jpg)
 
-论文地址：https://cdn.openai.com/pdf/32d9f210-8b73-45e0-91bc-82a30aef8a9a/navier-stokes.pdf
-
-
-
+[论文地址](https://cdn.openai.com/pdf/32d9f210-8b73-45e0-91bc-82a30aef8a9a/navier-stokes.pdf)
