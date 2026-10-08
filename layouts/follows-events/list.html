@@ -15,7 +15,7 @@
             <div class="follows-intro">{{- . -}}</div>
         {{- end -}}
         <div class="events-timeline">
-            {{- range $groups.Reverse -}}
+            {{- range $groups -}}
                 <h2 class="events-year">{{ .Key }}</h2>
                 <ul class="events-list">
                     {{- range .Pages.ByDate.Reverse -}}
