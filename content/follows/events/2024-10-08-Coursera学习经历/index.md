@@ -26,3 +26,7 @@ Business Analytics withExcel: Elementary toAdvanced 这门课比较怪，大概�
 https://coursera.org/share/f37a53304dbc536b830dfd093e330bb5
 https://coursera.org/share/97c5d75475658d37197f1dc4eac8a0d0
 https://coursera.org/share/d07456c27e3da36da74749aa84d1b469
+
+
+
+202610072109 写于北洋园格园二斋 128
