@@ -1,11 +1,11 @@
 ---
-title: "化工设计竞赛"
-date: 2023-07-20
+title: "化工实验大赛"
+date: 2023-07-15
 draft: false
 category: "event"
 description: "学习经历"
 aliases:
-  - "/follows/2023-07-20-化工设计竞赛/"
+  - "/follows/2023-07-15-化工实验大赛/"
 ---
 
 这是我第一次坐地铁，第一次去上海北京，第一次参加大型比赛。
