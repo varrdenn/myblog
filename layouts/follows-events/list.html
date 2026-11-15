@@ -22,7 +22,7 @@
                         <li class="events-item">
                             <span class="events-item-date">{{ .Date.Format "01.02" }}</span>
                             <h3 class="events-item-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-                            {{- $desc := .Params.description | default (.Summary | plainify) -}}
+                            {{- $desc := .Description | default (.Summary | plainify) -}}
                             {{- with $desc -}}
                                 <p class="events-item-desc">{{ . }}</p>
                             {{- end -}}
