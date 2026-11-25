@@ -1,6 +1,7 @@
 {{- define "title" }}{{ .Title }} - {{ .Site.Title }}{{ end -}}
 
 {{- define "content" -}}
+    {{- $params := .Scratch.Get "params" -}}
     <article class="page single moment-detail">
         {{- /* Back link */ -}}
         <a href="{{ .Parent.RelPermalink }}" class="moment-back">
@@ -25,7 +26,7 @@
 
         {{- /* Content text below images */ -}}
         <div class="content" id="content">
-            {{- .Content -}}
+            {{- dict "Content" .Content "Ruby" $params.ruby "Fraction" $params.fraction "Fontawesome" $params.fontawesome | partial "function/content.html" | safeHTML -}}
         </div>
 
         {{- /* Footer nav */ -}}

@@ -3,7 +3,7 @@
 {{- define "content" -}}
     {{- $type := .Params.category | default "movie" -}}
     {{- $cn := .Params.category_cn | default "" -}}
-    {{- $desc := .Description | default "" -}}
+    {{- $desc := .Params.description | default "" -}}
     {{- $follows := where .Site.RegularPages "Section" "follows" -}}
     {{- $items := where $follows "Params.category" $type -}}
     <div class="page follows-page media-category-page">
