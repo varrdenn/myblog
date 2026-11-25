@@ -10,27 +10,51 @@
         {{- $toc = dict "enable" false -}}
     {{- end -}}
 
+    {{- $posts := where .Site.RegularPages "Section" "posts" -}}
+    {{- $related := $posts.Related . -}}
+    {{- $related = where $related "RelPermalink" "!=" .RelPermalink -}}
+    {{- if eq (len $related) 0 -}}
+        {{- $related = where $posts "RelPermalink" "!=" .RelPermalink -}}
+    {{- end -}}
+    {{- $related = first 5 $related -}}
+
     <div class="single-layout">
-        {{- /* LEFT: all posts sidebar */ -}}
-        <aside class="post-sidebar">
+        {{- /* LEFT: related content */ -}}
+        <aside class="post-sidebar related-sidebar" aria-labelledby="related-content-title">
             <div class="post-sidebar-header">
-                <i class="fas fa-list fa-fw" aria-hidden="true"></i> 所有文章
+                <span class="sidebar-heading">
+                    <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+                    <span id="related-content-title">RELATED CONTENT</span>
+                </span>
+                <span class="sidebar-count" aria-label="{{ len $related }} 篇相关文章">{{ len $related }}</span>
             </div>
-            <nav class="post-sidebar-nav">
-                {{- $allPosts := where .Site.RegularPages "Section" "posts" -}}
-                {{- $postsByYear := $allPosts.GroupByDate "2006" -}}
-                {{- range $postsByYear -}}
-                    <div class="sidebar-year-group">
-                        <div class="sidebar-year-title">{{ .Key }}</div>
-                        {{- range .Pages -}}
-                            <a href="{{ .RelPermalink }}" class="sidebar-post-item{{ if eq $.RelPermalink .RelPermalink }} active{{ end }}" title="{{ .Title }}">
-                                <span class="sidebar-post-date">{{- .Date.Format "01-02" -}}</span>
-                                <span class="sidebar-post-title">{{- .Title -}}</span>
+            <p class="sidebar-caption">沿着同一主题继续阅读</p>
+            <nav class="post-sidebar-nav" aria-label="相关文章">
+                <ol class="sidebar-related-list">
+                    {{- range $index, $page := $related -}}
+                        <li class="sidebar-related-item">
+                            <a href="{{ $page.RelPermalink }}" class="sidebar-post-item" title="{{ $page.Title }}">
+                                <span class="sidebar-related-index">{{ add $index 1 | printf "%02d" }}</span>
+                                <span class="sidebar-related-body">
+                                    <span class="sidebar-post-title">{{ $page.Title }}</span>
+                                    <span class="sidebar-post-meta">
+                                        <time datetime="{{ $page.PublishDate.Format `2006-01-02` }}">{{ $page.PublishDate.Format "2006" }}</time>
+                                        {{- with $page.Params.categories -}}
+                                            <span class="sidebar-meta-divider" aria-hidden="true"></span>
+                                            <span>{{ delimit (first 1 .) " / " }}</span>
+                                        {{- end -}}
+                                    </span>
+                                </span>
+                                <i class="fa-solid fa-arrow-right sidebar-post-arrow" aria-hidden="true"></i>
                             </a>
-                        {{- end -}}
-                    </div>
-                {{- end -}}
+                        </li>
+                    {{- end -}}
+                </ol>
             </nav>
+            <a class="sidebar-all-posts" href="{{ "/posts/" | relLangURL }}">
+                <span>浏览全部文章</span>
+                <span class="sidebar-all-posts-meta">{{ len $posts }} <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></span>
+            </a>
         </aside>
 
         {{- /* CENTER: article */ -}}
@@ -100,8 +124,23 @@
 
         {{- /* RIGHT: Auto TOC */ -}}
         {{- if ne $toc.enable false -}}
-            <div class="toc" id="toc-auto">
-                <h2 class="toc-title">{{ T "contents" }}</h2>
+            <div class="toc" id="toc-auto" aria-label="{{ T "contents" }}">
+                <div class="toc-panel-header">
+                    <div>
+                        <span class="toc-eyebrow">ON THIS PAGE</span>
+                        <h2 class="toc-title">
+                            <i class="fa-solid fa-list-ul" aria-hidden="true"></i>
+                            CONTENTS
+                        </h2>
+                    </div>
+                    <button type="button" class="toc-print-btn" onclick="window.print()" aria-label="打印文章" title="打印文章">
+                        <i class="fa-solid fa-print" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="toc-panel-meta">
+                    <span>文章目录</span>
+                    <span>{{ T "readingTime" .ReadingTime }}</span>
+                </div>
                 <div class="toc-content{{ if eq $toc.auto false }} always-active{{ end }}" id="toc-content-auto"></div>
             </div>
         {{- end -}}

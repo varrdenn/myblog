@@ -101,3 +101,72 @@ document.addEventListener('DOMContentLoaded', function () {
     runtime();
     setInterval(runtime, 1000);
 });
+
+// ========== 文章目录：稳定追踪当前章节并保持在可视区域 ==========
+document.addEventListener('DOMContentLoaded', function () {
+    var tocContent = document.getElementById('toc-content-auto');
+    if (!tocContent) return;
+
+    var updateTimer = 0;
+
+    function updateTocNavigation() {
+        // LoveIt moves the generated TOC into this container after page init.
+        var tocLinks = tocContent.querySelectorAll('a[href^="#"]');
+        var firstLink = tocLinks[0];
+        var headings = document.querySelectorAll('.single .content > h2, .single .content > h3, .single .content > h4, .single .content > h5, .single .content > h6');
+        if (!headings.length || !tocLinks.length) return;
+
+        var headerHeight = document.getElementById('header-desktop')?.offsetHeight || 0;
+        var activationLine = headerHeight + 34;
+        var activeIndex = 0;
+
+        Array.prototype.some.call(headings, function (heading, index) {
+            if (heading.getBoundingClientRect().top <= activationLine) {
+                activeIndex = index;
+                return false;
+            }
+            return true;
+        });
+
+        // Hugo outputs headings and TOC links in the same document order.
+        var activeLink = tocLinks[activeIndex] || firstLink;
+        if (!activeLink) return;
+
+        Array.prototype.forEach.call(tocContent.querySelectorAll('a.active'), function (link) {
+            link.classList.remove('active');
+            link.removeAttribute('aria-current');
+        });
+        Array.prototype.forEach.call(tocContent.querySelectorAll('.has-active'), function (item) {
+            item.classList.remove('has-active');
+        });
+
+        activeLink.classList.add('active');
+        activeLink.setAttribute('aria-current', 'location');
+
+        var parent = activeLink.parentElement;
+        while (parent && parent !== tocContent) {
+            parent.classList.add('has-active');
+            parent = parent.parentElement?.parentElement;
+        }
+
+        var activeRect = activeLink.getBoundingClientRect();
+        var contentRect = tocContent.getBoundingClientRect();
+        var edgePadding = 18;
+
+        if (activeRect.top < contentRect.top + edgePadding) {
+            tocContent.scrollTop += activeRect.top - contentRect.top - edgePadding;
+        } else if (activeRect.bottom > contentRect.bottom - edgePadding) {
+            tocContent.scrollTop += activeRect.bottom - contentRect.bottom + edgePadding;
+        }
+    }
+
+    function scheduleTocUpdate() {
+        clearTimeout(updateTimer);
+        // Run after LoveIt's own scroll handler so its cleanup cannot win the frame.
+        updateTimer = setTimeout(updateTocNavigation, 90);
+    }
+
+    window.addEventListener('scroll', scheduleTocUpdate, { passive: true });
+    window.addEventListener('resize', scheduleTocUpdate);
+    setTimeout(updateTocNavigation, 180);
+});
