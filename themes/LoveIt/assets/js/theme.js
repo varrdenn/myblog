@@ -525,7 +525,7 @@ var Theme = /*#__PURE__*/function () {
             $tocLi.classList.remove('has-active');
           });
           var INDEX_SPACING = 20 + (headerIsFixed ? headerHeight : 0);
-          var activeTocIndex = $headerLinkElements.length - 1;
+          var activeTocIndex = Math.min($headerLinkElements.length - 1, $tocLinkElements.length - 1);
           for (var i = 0; i < $headerLinkElements.length - 1; i++) {
             var thisTop = $headerLinkElements[i].getBoundingClientRect().top;
             var nextTop = $headerLinkElements[i + 1].getBoundingClientRect().top;
@@ -534,9 +534,10 @@ var Theme = /*#__PURE__*/function () {
               break;
             }
           }
-          if (activeTocIndex !== -1) {
-            $tocLinkElements[activeTocIndex].classList.add('active');
-            var $parent = $tocLinkElements[activeTocIndex].parentElement;
+          var $activeTocLink = $tocLinkElements[activeTocIndex];
+          if ($activeTocLink) {
+            $activeTocLink.classList.add('active');
+            var $parent = $activeTocLink.parentElement;
             while ($parent !== $tocCore) {
               $parent.classList.add('has-active');
               $parent = $parent.parentElement.parentElement;

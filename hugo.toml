@@ -64,6 +64,7 @@ ignoreLogs = ["warning-goldmark-raw-html"]
     block = true
     title = true
 
+<<<<<<< Updated upstream
 [markup.highlight]
   codeFences = true
   noClasses = false
@@ -88,6 +89,28 @@ ignoreLogs = ["warning-goldmark-raw-html"]
 
 [menus]
   [[menus.main]]
+=======
+[related]
+  threshold = 20
+  includeNewer = true
+  toLower = false
+
+  [[related.indices]]
+    name = "tags"
+    weight = 100
+
+  [[related.indices]]
+    name = "categories"
+    weight = 80
+
+  [[related.indices]]
+    name = "date"
+    weight = 10
+
+[menu]
+  [[menu.main]]
+    weight = 1
+>>>>>>> Stashed changes
     identifier = "home"
     name = "HOME"
     url = "/"
