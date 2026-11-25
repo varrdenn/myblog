@@ -1,95 +1,32 @@
 baseURL = "http://localhost:1313/"
 title = "Varden"
-theme = "FixIt"
+theme = "LoveIt"
 themesDir = "themes"
 defaultContentLanguage = "zh-cn"
 locale = "zh-CN"
 hasCJKLanguage = true
-mainSections = ["posts"]
 enableEmoji = true
 enableRobotsTXT = true
+enableGitInfo = false
 buildFuture = true
 ignoreErrors = ["error-remote-getjson"]
 ignoreLogs = ["warning-goldmark-raw-html"]
-
-[frontmatter]
-  _merge = "shallow"
-  lastmod = ["lastmod", ":git", ":fileModTime", ":default"]
-
-[module]
-  [module.hugoVersion]
-    min = "0.166.0"
-
-[pagination]
-  pagerSize = 10
-  path = "page"
-
-[markup]
-  _merge = "shallow"
 
 [markup.goldmark.renderer]
   unsafe = true
   hardWraps = true
 
-[markup.goldmark.extensions]
-  definitionList = true
-  footnote = true
-  linkify = true
-  linkifyProtocol = "https"
-  strikethrough = false
-  table = true
-  taskList = true
-  typographer = true
-
-[markup.goldmark.extensions.extras]
-  [markup.goldmark.extensions.extras.delete]
-    enable = true
-  [markup.goldmark.extensions.extras.insert]
-    enable = true
-  [markup.goldmark.extensions.extras.mark]
-    enable = true
-  [markup.goldmark.extensions.extras.subscript]
-    enable = true
-  [markup.goldmark.extensions.extras.superscript]
-    enable = true
-
 [markup.goldmark.extensions.passthrough]
   enable = true
   [markup.goldmark.extensions.passthrough.delimiters]
-    block = [["$$", "$$"], ["\\[", "\\]"]]
-    inline = [["$", "$"], ["\\(", "\\)"]]
+    block = [['$$', '$$']]
+    inline = [['$', '$']]
 
-[markup.goldmark.parser]
-  [markup.goldmark.parser.attribute]
-    block = true
-    title = true
+[pagination]
+  disableAliases = false
+  pagerSize = 10
+  path = "page"
 
-<<<<<<< Updated upstream
-[markup.highlight]
-  codeFences = true
-  noClasses = false
-  anchorLineNos = false
-  guessSyntax = true
-  lineNos = true
-  lineNumbersInTable = true
-
-[outputs]
-  home = ["html", "rss"]
-  page = ["html"]
-  section = ["html", "rss"]
-  taxonomy = ["html"]
-  term = ["html", "rss"]
-
-[taxonomies]
-  category = "categories"
-  tag = "tags"
-
-[build]
-  noJSConfigInAssets = true
-
-[menus]
-  [[menus.main]]
-=======
 [related]
   threshold = 20
   includeNewer = true
@@ -110,276 +47,131 @@ ignoreLogs = ["warning-goldmark-raw-html"]
 [menu]
   [[menu.main]]
     weight = 1
->>>>>>> Stashed changes
     identifier = "home"
+    pre = "<i class='fa fa-house-user' aria-hidden='true'></i>"
+    post = ""
     name = "HOME"
     url = "/"
-    weight = 1
-    [menus.main.params]
-      icon = "fa-solid fa-house-user"
-  [[menus.main]]
+    title = ""
+  [[menu.main]]
+    weight = 2
     identifier = "posts"
+    pre = "<i class='fa fa-book' aria-hidden='true'></i>"
+    post = ""
     name = "Posts"
     url = "/posts/"
-    weight = 2
-    [menus.main.params]
-      icon = "fa-solid fa-book"
-  [[menus.main]]
+    title = ""
+
+  [[menu.main]]
+    weight = 3
     identifier = "moments"
+    pre = "<i class='fa-solid fa-image' aria-hidden='true'></i>"
+    post = ""
     name = "Moments"
     url = "/moments/"
-    weight = 3
-    [menus.main.params]
-      icon = "fa-solid fa-image"
-  [[menus.main]]
-    identifier = "follows"
+    title = ""
+  [[menu.main]]
+    weight = 4
+    identifier = "follow"
+    pre = "<i class='fa-solid fa-star' aria-hidden='true'></i>"
+    post = ""
     name = "Follows"
     url = "/follows/"
-    weight = 4
-    [menus.main.params]
-      icon = "fa-solid fa-star"
-  [[menus.main]]
+    title = ""
+  [[menu.main]]
+    weight = 5
     identifier = "links"
+    pre = "<i class='fa-solid fa-share-nodes' aria-hidden='true'></i>"
+    post = ""
     name = "Links"
     url = "/links/"
-    weight = 5
-    [menus.main.params]
-      icon = "fa-solid fa-share-nodes"
-  [[menus.main]]
+    title = ""
+  [[menu.main]]
+    weight = 6
     identifier = "about"
+    pre = "<i class='fa fa-id-card' aria-hidden='true'></i>"
+    post = ""
     name = "About"
     url = "/about/"
-    weight = 6
-    [menus.main.params]
-      icon = "fa-solid fa-id-card"
+    title = ""
 
 [params]
-  version = "1.0.0-rc.3"
-  description = "欢迎来到我的博客"
-  default_theme = "auto"
+  defaultTheme = "auto"
+  # Fingerprint generated CSS/JS so deployments cannot reuse a stale Lightbox bundle.
   fingerprint = "sha512"
-  date_format = "2006-01-02"
-  with_site_title = true
-  title_delimiter = "-"
-  author_archive = false
-  capitalize_titles = false
-  author_avatar = false
-  lightgallery = true
-  twemoji = false
-  page_style = "normal"
-  show_lastmod = true
-  word_count = true
-  reading_time = true
-  instant_page = false
+  dateFormat = "2006-01-02"
+  title = "Varden"
+  description = "欢迎来到我的博客"
+  images = [""]
 
   [params.author]
     name = "Varden"
     email = ""
     link = ""
-    avatar = ""
-
-  [params.link]
-    external_icon = true
-    [params.link.guard]
-      enable = false
-      mode = "modal"
-      allow_domains = []
-
-  [params.image]
-    cache_remote = false
-    optimise = false
-    black_list = []
-    [params.image.watermark]
-      enable = false
-
-  [params.app]
-    pwa = false
-    name = "Varden"
-    short_name = "Varden"
-    no_favicon = false
-    svg_favicon = "/favicon.ico"
-
-  [params.seo]
-    cover = ""
-    thumbnail_url = ""
-    images = []
 
   [params.header]
-    desktop_mode = "sticky"
-    mobile_mode = "auto"
-    blur = false
+    desktopMode = "fixed"
+    mobileMode = "auto"
+
     [params.header.title]
       name = "VARDEN'S BLOG"
-      logo = ""
       pre = ""
       post = ""
+      logo = ""
       typeit = true
-    [params.header.subtitle]
-      name = "欢迎来到我的博客"
-      typeit = false
 
   [params.home]
+    rss = 10
     [params.home.profile]
       enable = true
-      only_first_page = false
-      avatar_url = ""
+      gravatarEmail = ""
+      avatarURL = ""
       title = ""
       subtitle = "欢迎来到我的博客"
       typeit = false
       social = true
-      contribution = false
-      fullscreen = false
-    [params.home.posts]
-      enable = true
-      paginate = 10
-      image_preview = true
-      columns = 1
+      disclaimer = ""
 
   [params.social]
+    GitHub = ""
+    Email = ""
     RSS = true
 
-  [params.toc]
-    enable = true
-    keep_static = false
-    auto = true
-    position = "end"
-    ordered = false
-    start_level = 2
-    end_level = 6
-    decrease_h1 = false
-
-  [params.math]
-    enable = true
-    type = "katex"
-    [params.math.katex]
-      copy_tex = true
-      throw_on_error = false
-      error_color = "#ff4949"
-      [params.math.katex.macros]
-
-  [params.table]
-    number = false
-    sort = true
-
-  [params.heading]
-    capitalize = false
-    [params.heading.number]
-      enable = false
-      only_main_section = true
-
-  [params.related]
-    enable = false
-
-  [params.share]
-    enable = false
-
-  [params.post_link]
-    markdown = false
-    source = false
-    edit = false
-    report = false
-    editor = ""
-
-  [params.comment]
-    enable = true
-    [params.comment.giscus]
+  [params.page]
+    [params.page.toc]
+      enable = true
+      keepStatic = false
+    [params.page.comment]
+      enable = true
+    [params.page.comment.giscus]
       enable = true
       repo = "varrdenn/myblog"
-      repo_id = "R_kgDOSzSANQ"
+      repoId = "R_kgDOSzSANQ"
       category = "Announcements"
-      category_id = "DIC_kwDOSzSANc4C-qz6"
+      categoryId = "DIC_kwDOSzSANc4C-qz6"
       mapping = "pathname"
-      origin = "https://giscus.app"
       strict = "0"
-      reactions_enabled = "1"
-      emit_metadata = "0"
-      input_position = "bottom"
+      reactionsEnabled = "1"
+      emitMetadata = "0"
+      inputPosition = "bottom"
+      lightTheme = "noborder_light"
+      darkTheme = "noborder_gray"
       lang = "zh-CN"
-      light_theme = "noborder_light"
-      dark_theme = "noborder_gray"
-      lazy_load = true
+
+    [params.page.math]
+      enable = true
+      inlineLeftDelimiter = "$"
+      inlineRightDelimiter = "$"
+      blockLeftDelimiter = "$$"
+      blockRightDelimiter = "$$"
+
+    [params.page.library]
+      [params.page.library.js]
+        customJS = "js/custom.js"
+    [params.page.share]
+      enable = false
 
   [params.footer]
     enable = true
-    brand = false
-    social = false
-    copyright = true
-    author = true
     since = "2025"
     license = ""
-    [params.footer.powered]
-      enable = true
-      hugo_logo = false
-      theme_logo = false
-    [params.footer.site_time]
-      enable = true
-      animate = true
-      icon = "fa-solid fa-heartbeat"
-      pre = "本站已运行"
-      value = "2025-01-01T19:37:10+08:00"
-
-  [params.busuanzi]
-    enable = true
-    site_views = true
-    page_views = true
-    speed = true
-
-  [params.archives]
-    paginate = 20
-    date_format = "01-02"
-
-  [params.section]
-    paginate = 20
-    date_format = "01-02"
-
-  [params.list]
-    paginate = 20
-    date_format = "01-02"
-
-  [params.recently_updated]
-    archives = false
-    section = false
-    list = false
-    days = 30
-    max_count = 10
-
-  [params.contribution]
-    enable = false
-
-  [params.tag_cloud]
-    enable = true
-    min = 14
-    max = 32
-    peak_count = 10
-    orderby = "count"
-
-  [params.search]
-    enable = false
-    type = "pagefind"
-    [params.search.pagefind]
-      base_url = "/pagefind/"
-
-  [params.feed]
-    limit = 10
-    full_text = false
-
-  [params.appearance]
-    global_font_family = "\"仓耳今楷03\", -apple-system, BlinkMacSystemFont, \"Noto Sans SC\", \"PingFang SC\", \"Microsoft YaHei\", sans-serif"
-    header_title_font_family = "\"Ma Shan Zheng\", cursive"
-
-  [params.custom_partials]
-    head = []
-    menu_desktop = []
-    menu_mobile = []
-    profile = []
-    aside = []
-    comment = []
-    footer = ["site-extras"]
-    widgets = []
-    assets = []
-    post_toc_before = []
-    post_toc_after = []
-    post_content_before = []
-    post_content_after = []
-    post_footer_before = []
-    post_footer_after = []
